@@ -19,7 +19,7 @@ namespace tiota
             connectionHandle = (ushort)(data[1] + (data[2] << 8));
             pduLength = data[3];
             value = new byte[pduLength];
-            Array.Copy(data, 4, value, 0, pduLength);
+            Array.Copy(data, 4, value, 0, Math.Min(data.Length - 4, pduLength));
         }
 
         public byte Status { get { return status; } }

@@ -31,7 +31,7 @@ namespace tiota
             if (eventType == 4)
             {
                 byte[] description = new byte[12];
-                Array.Copy(data, 13, description, 0, description.Length);
+                Array.Copy(data, 13, description, 0, Math.Min(data.Length-13, description.Length));
                 name = Encoding.UTF8.GetString(description);
             }
         }

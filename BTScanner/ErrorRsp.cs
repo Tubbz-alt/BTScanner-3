@@ -24,7 +24,7 @@ namespace tiota
             value = new byte[pduLength];
             if (pduLength > 0)
             {
-                Array.Copy(data, 4, value, 0, pduLength);
+                Array.Copy(data, 4, value, 0, Math.Min(data.Length-4,pduLength));
             }
         }
 

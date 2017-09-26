@@ -21,7 +21,7 @@ namespace tiota
             dataLength = data[3];
 
             parameters = new byte[dataLength];
-            Array.Copy(data, 4, parameters, 0, parameters.Length);
+            Array.Copy(data, 4, parameters, 0, Math.Min(data.Length - 4, parameters.Length));
         }
 
         public byte Status {  get { return status; } }

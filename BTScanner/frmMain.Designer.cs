@@ -31,6 +31,11 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.grdTargets = new System.Windows.Forms.DataGridView();
+            this.colMAC = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDeviceName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colRSSI = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colLastSeen = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTest = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.tmrDiscover = new System.Windows.Forms.Timer(this.components);
             this.cmbPorts = new System.Windows.Forms.ComboBox();
             this.lblCom = new System.Windows.Forms.Label();
@@ -38,14 +43,11 @@
             this.btnStop = new System.Windows.Forms.Button();
             this.btnScan = new System.Windows.Forms.Button();
             this.btnInit = new System.Windows.Forms.Button();
-            this.colMAC = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colDeviceName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colRSSI = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colLastSeen = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colTest = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.numInterval = new System.Windows.Forms.NumericUpDown();
             this.lblInterval = new System.Windows.Forms.Label();
             this.txtCsvFile = new System.Windows.Forms.TextBox();
+            this.pgrInterval = new System.Windows.Forms.ProgressBar();
+            this.lblCsvFilename = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.grdTargets)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numInterval)).BeginInit();
             this.SuspendLayout();
@@ -68,76 +70,8 @@
             this.grdTargets.Location = new System.Drawing.Point(12, 12);
             this.grdTargets.Name = "grdTargets";
             this.grdTargets.RowHeadersVisible = false;
-            this.grdTargets.Size = new System.Drawing.Size(757, 548);
+            this.grdTargets.Size = new System.Drawing.Size(757, 419);
             this.grdTargets.TabIndex = 6;
-            // 
-            // tmrDiscover
-            // 
-            this.tmrDiscover.Tick += new System.EventHandler(this.tmrProgressUpdate_Tick);
-            // 
-            // cmbPorts
-            // 
-            this.cmbPorts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmbPorts.FormattingEnabled = true;
-            this.cmbPorts.Location = new System.Drawing.Point(894, 24);
-            this.cmbPorts.Name = "cmbPorts";
-            this.cmbPorts.Size = new System.Drawing.Size(121, 28);
-            this.cmbPorts.TabIndex = 5;
-            this.cmbPorts.TextChanged += new System.EventHandler(this.cmbPorts_TextChanged);
-            this.cmbPorts.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cmbPorts_MouseClick);
-            // 
-            // lblCom
-            // 
-            this.lblCom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblCom.Location = new System.Drawing.Point(798, 29);
-            this.lblCom.Name = "lblCom";
-            this.lblCom.Size = new System.Drawing.Size(90, 23);
-            this.lblCom.TabIndex = 4;
-            this.lblCom.Text = "Com Port";
-            // 
-            // btnStart
-            // 
-            this.btnStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnStart.Location = new System.Drawing.Point(802, 301);
-            this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(213, 50);
-            this.btnStart.TabIndex = 3;
-            this.btnStart.Text = "&Start Test";
-            this.btnStart.UseVisualStyleBackColor = true;
-            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
-            // 
-            // btnStop
-            // 
-            this.btnStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnStop.Location = new System.Drawing.Point(802, 357);
-            this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(213, 50);
-            this.btnStop.TabIndex = 2;
-            this.btnStop.Text = "S&top";
-            this.btnStop.UseVisualStyleBackColor = true;
-            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
-            // 
-            // btnScan
-            // 
-            this.btnScan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnScan.Location = new System.Drawing.Point(802, 159);
-            this.btnScan.Name = "btnScan";
-            this.btnScan.Size = new System.Drawing.Size(213, 50);
-            this.btnScan.TabIndex = 1;
-            this.btnScan.Text = "S&can";
-            this.btnScan.UseVisualStyleBackColor = true;
-            this.btnScan.Click += new System.EventHandler(this.btnScan_Click);
-            // 
-            // btnInit
-            // 
-            this.btnInit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnInit.Location = new System.Drawing.Point(802, 103);
-            this.btnInit.Name = "btnInit";
-            this.btnInit.Size = new System.Drawing.Size(213, 50);
-            this.btnInit.TabIndex = 0;
-            this.btnInit.Text = "&Init";
-            this.btnInit.UseVisualStyleBackColor = true;
-            this.btnInit.Click += new System.EventHandler(this.btnInit_Click);
             // 
             // colMAC
             // 
@@ -180,9 +114,78 @@
             this.colTest.Name = "colTest";
             this.colTest.Width = 46;
             // 
+            // tmrDiscover
+            // 
+            this.tmrDiscover.Tick += new System.EventHandler(this.tmrProgressUpdate_Tick);
+            // 
+            // cmbPorts
+            // 
+            this.cmbPorts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbPorts.FormattingEnabled = true;
+            this.cmbPorts.Location = new System.Drawing.Point(894, 24);
+            this.cmbPorts.Name = "cmbPorts";
+            this.cmbPorts.Size = new System.Drawing.Size(121, 28);
+            this.cmbPorts.TabIndex = 5;
+            this.cmbPorts.TextChanged += new System.EventHandler(this.cmbPorts_TextChanged);
+            this.cmbPorts.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cmbPorts_MouseClick);
+            // 
+            // lblCom
+            // 
+            this.lblCom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCom.Location = new System.Drawing.Point(798, 29);
+            this.lblCom.Name = "lblCom";
+            this.lblCom.Size = new System.Drawing.Size(90, 23);
+            this.lblCom.TabIndex = 4;
+            this.lblCom.Text = "Com Port";
+            // 
+            // btnStart
+            // 
+            this.btnStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnStart.Location = new System.Drawing.Point(802, 242);
+            this.btnStart.Name = "btnStart";
+            this.btnStart.Size = new System.Drawing.Size(213, 50);
+            this.btnStart.TabIndex = 3;
+            this.btnStart.Text = "&Start Test";
+            this.btnStart.UseVisualStyleBackColor = true;
+            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
+            // 
+            // btnStop
+            // 
+            this.btnStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnStop.Location = new System.Drawing.Point(802, 298);
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(213, 50);
+            this.btnStop.TabIndex = 2;
+            this.btnStop.Text = "S&top";
+            this.btnStop.UseVisualStyleBackColor = true;
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            // 
+            // btnScan
+            // 
+            this.btnScan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnScan.Location = new System.Drawing.Point(802, 159);
+            this.btnScan.Name = "btnScan";
+            this.btnScan.Size = new System.Drawing.Size(213, 50);
+            this.btnScan.TabIndex = 1;
+            this.btnScan.Text = "S&can";
+            this.btnScan.UseVisualStyleBackColor = true;
+            this.btnScan.Click += new System.EventHandler(this.btnScan_Click);
+            // 
+            // btnInit
+            // 
+            this.btnInit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnInit.Location = new System.Drawing.Point(802, 103);
+            this.btnInit.Name = "btnInit";
+            this.btnInit.Size = new System.Drawing.Size(213, 50);
+            this.btnInit.TabIndex = 0;
+            this.btnInit.Text = "&Init";
+            this.btnInit.UseVisualStyleBackColor = true;
+            this.btnInit.Click += new System.EventHandler(this.btnInit_Click);
+            // 
             // numInterval
             // 
-            this.numInterval.Location = new System.Drawing.Point(895, 413);
+            this.numInterval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.numInterval.Location = new System.Drawing.Point(895, 353);
             this.numInterval.Maximum = new decimal(new int[] {
             3600,
             0,
@@ -204,8 +207,8 @@
             // 
             // lblInterval
             // 
-            this.lblInterval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblInterval.Location = new System.Drawing.Point(803, 415);
+            this.lblInterval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblInterval.Location = new System.Drawing.Point(798, 356);
             this.lblInterval.Name = "lblInterval";
             this.lblInterval.Size = new System.Drawing.Size(90, 23);
             this.lblInterval.TabIndex = 8;
@@ -213,18 +216,40 @@
             // 
             // txtCsvFile
             // 
-            this.txtCsvFile.Location = new System.Drawing.Point(802, 480);
+            this.txtCsvFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtCsvFile.Location = new System.Drawing.Point(124, 464);
             this.txtCsvFile.Name = "txtCsvFile";
-            this.txtCsvFile.Size = new System.Drawing.Size(213, 26);
+            this.txtCsvFile.Size = new System.Drawing.Size(895, 26);
             this.txtCsvFile.TabIndex = 10;
             this.txtCsvFile.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.txtCsvFile_MouseDoubleClick);
+            // 
+            // pgrInterval
+            // 
+            this.pgrInterval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.pgrInterval.Location = new System.Drawing.Point(802, 392);
+            this.pgrInterval.Name = "pgrInterval";
+            this.pgrInterval.Size = new System.Drawing.Size(213, 39);
+            this.pgrInterval.TabIndex = 11;
+            // 
+            // lblCsvFilename
+            // 
+            this.lblCsvFilename.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCsvFilename.Location = new System.Drawing.Point(12, 467);
+            this.lblCsvFilename.Name = "lblCsvFilename";
+            this.lblCsvFilename.Size = new System.Drawing.Size(113, 23);
+            this.lblCsvFilename.TabIndex = 12;
+            this.lblCsvFilename.Text = "Csv Filename";
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CausesValidation = false;
-            this.ClientSize = new System.Drawing.Size(1031, 577);
+            this.ClientSize = new System.Drawing.Size(1031, 501);
+            this.Controls.Add(this.lblCsvFilename);
+            this.Controls.Add(this.pgrInterval);
             this.Controls.Add(this.txtCsvFile);
             this.Controls.Add(this.lblInterval);
             this.Controls.Add(this.numInterval);
@@ -236,7 +261,7 @@
             this.Controls.Add(this.cmbPorts);
             this.Controls.Add(this.grdTargets);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(1053, 452);
+            this.MinimumSize = new System.Drawing.Size(1053, 557);
             this.Name = "frmMain";
             this.Text = "Advertising Tester";
             this.TopMost = true;
@@ -266,6 +291,8 @@
         private System.Windows.Forms.NumericUpDown numInterval;
         private System.Windows.Forms.Label lblInterval;
         private System.Windows.Forms.TextBox txtCsvFile;
+        private System.Windows.Forms.ProgressBar pgrInterval;
+        private System.Windows.Forms.Label lblCsvFilename;
     }
 }
 

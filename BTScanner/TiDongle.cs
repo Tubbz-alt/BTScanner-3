@@ -453,7 +453,7 @@ namespace tiota
             TxBuffer[1] = 0x31; //0xFE31 (GAP_GetParam)
             TxBuffer[2] = 0xFE; //0xFE31 (GAP_GetParam)
             TxBuffer[3] = (byte)ids.Length; // Length
-            Array.Copy(ids, 0, TxBuffer, 4, ids.Length);
+            Array.Copy(ids, 0, TxBuffer, 4, Math.Min(TxBuffer.Length-4,ids.Length));
             SendData(TxBuffer);
         }
 
@@ -489,7 +489,7 @@ namespace tiota
             TxBuffer[5] = (byte)(CommHandle >> 8);
             TxBuffer[6] = (byte)Handle;
             TxBuffer[7] = (byte)(Handle >> 8);
-            Array.Copy(value, 0, TxBuffer, 8, value.Length);
+            Array.Copy(value, 0, TxBuffer, 8, Math.Min(TxBuffer.Length - 8, value.Length));
             WriteResponse = false;
             SendData(TxBuffer);
 
@@ -513,7 +513,7 @@ namespace tiota
             TxBuffer[5] = (byte)(CommHandle >> 8);
             TxBuffer[6] = (byte)Handle;
             TxBuffer[7] = (byte)(Handle >> 8);
-            Array.Copy(value, 0, TxBuffer, 8, value.Length);
+            Array.Copy(value, 0, TxBuffer, 8, Math.Min(TxBuffer.Length - 8, value.Length));
             WriteResponse = false;
             SendData(TxBuffer);
             /*

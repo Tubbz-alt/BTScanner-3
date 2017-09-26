@@ -44,6 +44,8 @@ namespace tiota
         private static Logger logger = LogManager.GetCurrentClassLogger();
         bool _in_scan = false;
         bool _in_test = false;
+        bool _first_round = true;
+        int timeOutnter = 0;
         #endregion
 
         #region Form init
@@ -120,6 +122,7 @@ namespace tiota
             List<DataGridViewRow> removeRows = new List<DataGridViewRow>();
             foreach (DataGridViewRow row in grdTargets.Rows)
             {
+                row.Tag = 0;
                 oCell = row.Cells["colTest"] as DataGridViewCheckBoxCell;
                 bool bChecked = (null != oCell && null != oCell.Value && true == (bool)oCell.Value);
                 if (bChecked != true)
@@ -133,7 +136,7 @@ namespace tiota
                 grdTargets.Rows.Remove(row);
             }
 
-            tmrDiscover.Interval = (int)numInterval.Value;
+            tmrDiscover.Interval = 1000;
             tmrDiscover.Start();
         }
 
@@ -188,18 +191,10 @@ namespace tiota
                     {
                         row.Cells["colDeviceName"].Value = name;
                         row.Cells["colRSSI"].Value = rssi;
+                        
                         row.Cells["colLastSeen"].Value = DateTime.Now.ToShortTimeString();
-                        if (_in_test)
-                        {
-                            if (!string.IsNullOrEmpty(txtCsvFile.Text))
-                            {
-                                string line = string.Format("{0,8},{1,15},{2,4},{3}" + Environment.NewLine, row.Cells["colMAC"].Value.ToString(),
-                                                                  row.Cells["colDeviceName"].Value.ToString(),
-                                                                  row.Cells["colRSSI"].Value.ToString(),
-                                                                  DateTime.Now.ToString());
-                                File.AppendAllText(txtCsvFile.Text, line);
-                            }
-                        }
+                        row.Tag = (int)row.Tag + 1;
+
                         break;
                     }
                 }
@@ -244,7 +239,7 @@ namespace tiota
 
         private void ScanComplite(object sender, TiEventArgs e)
         {
-            if (this.InvokeRequired)
+            if (grdTargets.InvokeRequired)
             {
                 Invoke(new MethodInvoker(delegate { ScanComplite(sender, e); }));
             }
@@ -256,6 +251,29 @@ namespace tiota
                     btnScan.Enabled = true;
                     btnStart.Enabled = true;
                     btnStop.Enabled = true;
+                }
+                else
+                {
+                    foreach (DataGridViewRow row in grdTargets.Rows)
+                    {
+                        if (row.Tag == null)
+                            row.Tag = 0;
+                        if ((int)row.Tag == 0)
+                        {
+                            row.DefaultCellStyle.BackColor = Color.OrangeRed;
+                        }
+                        else
+                        {
+                            row.DefaultCellStyle.BackColor = Color.White;
+                        }
+                        string line = string.Format("{4,3},{0,8},{1,15},{2,4},{3}" + Environment.NewLine, row.Cells["colMAC"].Value.ToString(),
+                                                              row.Cells["colDeviceName"].Value.ToString(),
+                                                              row.Cells["colRSSI"].Value.ToString(),
+                                                              DateTime.Now.ToString(),
+                                                              (int)row.Tag);
+                        row.Tag = 0;
+                        File.AppendAllText(txtCsvFile.Text, line);
+                    }
                 }
             }
         }
@@ -318,10 +336,17 @@ namespace tiota
 
         private void tmrProgressUpdate_Tick(object sender, EventArgs e)
         {
-            if (_in_scan == false)
+            timeOutnter += 1;
+            SetProgress((timeOutnter * 100) / (int)numInterval.Value);
+            if ((int)numInterval.Value <= timeOutnter)
             {
-                _dongle.Discaver();
-                _in_scan = true;
+                if (_in_scan == false)
+                {
+                    _dongle.Discaver();
+                    _in_scan = true;
+                    timeOutnter = 0;
+                    SetProgress(0);
+                }
             }
         }
 
@@ -340,6 +365,18 @@ namespace tiota
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 ((TextBox)sender).Text = ofd.FileName;
+            }
+        }
+
+        private void SetProgress(int value)
+        {
+            if (pgrInterval.InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate { SetProgress(value); }));
+            }
+            else
+            {
+                pgrInterval.Value = value;
             }
         }
     }
