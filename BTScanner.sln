@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTScanner", "BTScanner\BTScanner.csproj", "{88C7F833-DAAF-4397-B208-C5CD2B9E8E19}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Installer", "Installer\Installer.vdproj", "{FF4C4FAB-2532-444C-A579-7A2A1256BDBB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{88C7F833-DAAF-4397-B208-C5CD2B9E8E19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88C7F833-DAAF-4397-B208-C5CD2B9E8E19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88C7F833-DAAF-4397-B208-C5CD2B9E8E19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88C7F833-DAAF-4397-B208-C5CD2B9E8E19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF4C4FAB-2532-444C-A579-7A2A1256BDBB}.Debug|Any CPU.ActiveCfg = Debug
+		{FF4C4FAB-2532-444C-A579-7A2A1256BDBB}.Release|Any CPU.ActiveCfg = Release
+		{FF4C4FAB-2532-444C-A579-7A2A1256BDBB}.Release|Any CPU.Build.0 = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
