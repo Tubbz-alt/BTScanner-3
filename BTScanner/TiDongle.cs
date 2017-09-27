@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Threading;
-
+using static tiota.HCISerializer.HCICmds;
+using static tiota.HCISerializer.HCICmds.GAPCmds;
 
 namespace tiota
 {
@@ -67,7 +68,7 @@ namespace tiota
         IGUI _gui = null;
         Thread _receiveParserThread = null;
         List<byte> rxRelay = new List<byte>();
-        byte[] buffer = new byte[255];
+        byte[] buffer = new byte[1000];
         int ByteCount = 0;
 
         protected bool init_success = false;
@@ -367,7 +368,8 @@ namespace tiota
         public void Discaver()
         {
             byte[] TxBuffer = new byte[] { 1, 4, 0xfe, 3, 3, 1, 0 };
-            SendData(TxBuffer);
+            byte []b = new GAP_DeviceDiscoveryRequest().GetBuffer();
+            SendData(b);
         }
 
         public void TiConnect(byte[] MacAddress)
@@ -424,8 +426,9 @@ namespace tiota
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 1, 0, 0, 0 };
-
-            SendData(TxBuffer, 0);
+            byte[] b = new GAP_DeviceInit().GetBuffer();
+            SendData(b, 0);
+            //SendData(TxBuffer, 0);
         }
 
         public void HardReset()
