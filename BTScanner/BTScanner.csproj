@@ -73,6 +73,7 @@
     <Compile Include="ErrorRsp.cs" />
     <Compile Include="EstablishLink.cs" />
     <Compile Include="HandleValueNotification.cs" />
+    <Compile Include="HCICmds.cs" />
     <Compile Include="HCI_ExtentionCommandStatus.cs" />
     <Compile Include="CommPort.cs" />
     <Compile Include="frmMain.cs">

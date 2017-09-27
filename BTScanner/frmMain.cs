@@ -9,6 +9,8 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Windows.Forms;
+using static tiota.HCISerializer.HCICmds;
+using static tiota.HCISerializer.HCICmds.GAPCmds;
 using static tiota.SoftwareUpgrade;
 
 namespace tiota
@@ -52,6 +54,12 @@ namespace tiota
         public frmMain()
         {
             InitializeComponent();
+
+            //GAP_DeviceInit x = new GAP_DeviceInit();
+            //byte[] y = x.GetBuffer();
+
+            //GAP_DeviceDiscoveryRequest disc = new GAP_DeviceDiscoveryRequest();
+            //y = disc.GetBuffer();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -81,8 +89,7 @@ namespace tiota
             btnStart.Enabled = false;
             btnStop.Enabled = false;
             
-            _dongle.TiDisconnectAll();
-            Thread.Sleep(200);
+            //_dongle.TiDisconnectAll();
             _dongle.Discaver();
         }
 
@@ -115,7 +122,8 @@ namespace tiota
             btnScan.Enabled = false;
             btnStart.Enabled = false;
             btnStop.Enabled = true;
-
+            btnClear.Enabled = false;
+            chkCheckAll.Enabled = false;
             //Send cancel discovery
 
             DataGridViewCheckBoxCell oCell;
@@ -135,7 +143,7 @@ namespace tiota
             {
                 grdTargets.Rows.Remove(row);
             }
-
+            UpdateRowCounter();
             tmrDiscover.Interval = 1000;
             tmrDiscover.Start();
         }
@@ -156,6 +164,8 @@ namespace tiota
             btnScan.Enabled = false;
             btnStart.Enabled = false;
             btnStop.Enabled = false;
+            btnClear.Enabled = true;
+            chkCheckAll.Enabled = true;
         }
 
         private void cmbPorts_SelectedIndexChanged(object sender, EventArgs e) { }
@@ -173,7 +183,11 @@ namespace tiota
             else
             {
                 if (_in_test == false)
+                {
                     this.grdTargets.Rows.Add(MAC.ToString(), name, rssi);
+                    UpdateRowCounter();
+                }
+
             }
         }
 
@@ -193,6 +207,8 @@ namespace tiota
                         row.Cells["colRSSI"].Value = rssi;
                         
                         row.Cells["colLastSeen"].Value = DateTime.Now.ToShortTimeString();
+                        if (row.Tag == null)
+                            row.Tag = 0;
                         row.Tag = (int)row.Tag + 1;
 
                         break;
@@ -377,6 +393,59 @@ namespace tiota
             else
             {
                 pgrInterval.Value = value;
+            }
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            grdTargets.Rows.Clear();
+            UpdateRowCounter();
+
+        }
+
+        private void UpdateRowCounter()
+        {
+            if (lblRowCount.InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate { UpdateRowCounter(); }));
+            }
+            else
+            {
+                lblRowCount.Text = grdTargets.Rows.Count.ToString();
+            }
+        }
+
+        private void chkCheckAll_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in grdTargets.Rows)
+            {
+                DataGridViewCheckBoxCell oCell = row.Cells["colTest"] as DataGridViewCheckBoxCell;
+                oCell.Value = chkCheckAll.Checked;
+            }
+        }
+
+        private void grdTargets_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            bool newState = true;
+            if (e.ColumnIndex == 4)
+            {
+                grdTargets.Refresh();
+                DataGridViewCheckBoxCell cell = (DataGridViewCheckBoxCell)grdTargets.Rows[e.RowIndex].Cells[e.ColumnIndex];
+               
+                newState = (bool)(cell.Value);// ? false : true;
+                if (newState == true)
+                {
+                    foreach (DataGridViewRow row in grdTargets.Rows)
+                    {
+                        DataGridViewCheckBoxCell oCell = row.Cells["colTest"] as DataGridViewCheckBoxCell;
+                        if (false == (bool)oCell.Value)
+                        {
+                            newState = false;
+                            break;
+                        }
+                    }
+                }
+                chkCheckAll.Checked = newState;
             }
         }
     }
