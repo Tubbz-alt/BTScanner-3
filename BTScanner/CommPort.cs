@@ -43,7 +43,7 @@ namespace tiota
         {
             Close();
 
-            _serialPort = new SerialPort(_portName, 115200 * 8);
+            _serialPort = new SerialPort(_portName, 115200);
             _serialPort.Parity = Parity.None;
             _serialPort.DataBits = 8;
             _serialPort.StopBits = StopBits.One;
