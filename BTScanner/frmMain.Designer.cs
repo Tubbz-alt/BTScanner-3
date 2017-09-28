@@ -31,11 +31,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.grdTargets = new System.Windows.Forms.DataGridView();
-            this.colMAC = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colDeviceName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colRSSI = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colLastSeen = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colTest = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.tmrDiscover = new System.Windows.Forms.Timer(this.components);
             this.cmbPorts = new System.Windows.Forms.ComboBox();
             this.lblCom = new System.Windows.Forms.Label();
@@ -51,6 +46,12 @@
             this.btnClear = new System.Windows.Forms.Button();
             this.chkCheckAll = new System.Windows.Forms.CheckBox();
             this.lblRowCount = new System.Windows.Forms.Label();
+            this.colMAC = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDeviceName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colRSSI = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colLastSeen = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colVersion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTest = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.grdTargets)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numInterval)).BeginInit();
             this.SuspendLayout();
@@ -69,6 +70,7 @@
             this.colDeviceName,
             this.colRSSI,
             this.colLastSeen,
+            this.colVersion,
             this.colTest});
             this.grdTargets.Location = new System.Drawing.Point(8, 8);
             this.grdTargets.Margin = new System.Windows.Forms.Padding(2);
@@ -77,47 +79,6 @@
             this.grdTargets.Size = new System.Drawing.Size(505, 252);
             this.grdTargets.TabIndex = 6;
             this.grdTargets.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.grdTargets_CellContentClick);
-            // 
-            // colMAC
-            // 
-            this.colMAC.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.colMAC.HeaderText = "MAC";
-            this.colMAC.MaxInputLength = 12;
-            this.colMAC.Name = "colMAC";
-            this.colMAC.ReadOnly = true;
-            this.colMAC.Width = 55;
-            // 
-            // colDeviceName
-            // 
-            this.colDeviceName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colDeviceName.HeaderText = "Device Name";
-            this.colDeviceName.MaxInputLength = 20;
-            this.colDeviceName.Name = "colDeviceName";
-            this.colDeviceName.ReadOnly = true;
-            // 
-            // colRSSI
-            // 
-            this.colRSSI.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.colRSSI.HeaderText = "RSSI";
-            this.colRSSI.MaxInputLength = 4;
-            this.colRSSI.Name = "colRSSI";
-            this.colRSSI.ReadOnly = true;
-            this.colRSSI.Width = 57;
-            // 
-            // colLastSeen
-            // 
-            this.colLastSeen.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.colLastSeen.HeaderText = "LastSeen";
-            this.colLastSeen.Name = "colLastSeen";
-            this.colLastSeen.ReadOnly = true;
-            this.colLastSeen.Width = 77;
-            // 
-            // colTest
-            // 
-            this.colTest.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.colTest.HeaderText = "Test";
-            this.colTest.Name = "colTest";
-            this.colTest.Width = 34;
             // 
             // tmrDiscover
             // 
@@ -291,6 +252,55 @@
             this.lblRowCount.TabIndex = 15;
             this.lblRowCount.Text = "0";
             // 
+            // colMAC
+            // 
+            this.colMAC.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.colMAC.HeaderText = "MAC";
+            this.colMAC.MaxInputLength = 12;
+            this.colMAC.Name = "colMAC";
+            this.colMAC.ReadOnly = true;
+            this.colMAC.Width = 55;
+            // 
+            // colDeviceName
+            // 
+            this.colDeviceName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colDeviceName.HeaderText = "Device Name";
+            this.colDeviceName.MaxInputLength = 20;
+            this.colDeviceName.Name = "colDeviceName";
+            this.colDeviceName.ReadOnly = true;
+            // 
+            // colRSSI
+            // 
+            this.colRSSI.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.colRSSI.HeaderText = "RSSI";
+            this.colRSSI.MaxInputLength = 4;
+            this.colRSSI.Name = "colRSSI";
+            this.colRSSI.ReadOnly = true;
+            this.colRSSI.Width = 57;
+            // 
+            // colLastSeen
+            // 
+            this.colLastSeen.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.colLastSeen.HeaderText = "LastSeen";
+            this.colLastSeen.Name = "colLastSeen";
+            this.colLastSeen.ReadOnly = true;
+            this.colLastSeen.Width = 77;
+            // 
+            // colVersion
+            // 
+            this.colVersion.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.colVersion.HeaderText = "Version";
+            this.colVersion.MinimumWidth = 30;
+            this.colVersion.Name = "colVersion";
+            this.colVersion.Width = 67;
+            // 
+            // colTest
+            // 
+            this.colTest.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.colTest.HeaderText = "Test";
+            this.colTest.Name = "colTest";
+            this.colTest.Width = 34;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -335,11 +345,6 @@
         private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.Button btnScan;
         private System.Windows.Forms.Button btnInit;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colMAC;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colDeviceName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colRSSI;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colLastSeen;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn colTest;
         private System.Windows.Forms.NumericUpDown numInterval;
         private System.Windows.Forms.Label lblInterval;
         private System.Windows.Forms.TextBox txtCsvFile;
@@ -348,6 +353,12 @@
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.CheckBox chkCheckAll;
         private System.Windows.Forms.Label lblRowCount;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMAC;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDeviceName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colRSSI;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colLastSeen;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colVersion;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colTest;
     }
 }
 

@@ -282,11 +282,13 @@ namespace tiota
                         {
                             row.DefaultCellStyle.BackColor = Color.White;
                         }
-                        string line = string.Format("{4,3},{0,8},{1,15},{2,4},{3}" + Environment.NewLine, row.Cells["colMAC"].Value.ToString(),
+                        string line = string.Format("{4,3},{0,8},{1,15},{2,4},{5,12},{3}" + Environment.NewLine, 
+                                                              row.Cells["colMAC"].Value.ToString(),
                                                               row.Cells["colDeviceName"].Value.ToString(),
                                                               row.Cells["colRSSI"].Value.ToString(),
                                                               DateTime.Now.ToString(),
-                                                              (int)row.Tag);
+                                                              (int)row.Tag,
+                                                              row.Cells["colVersion"].Value.ToString());
                         row.Tag = 0;
                         File.AppendAllText(txtCsvFile.Text, line);
                     }
@@ -375,8 +377,12 @@ namespace tiota
         {
             SaveFileDialog ofd = new SaveFileDialog();
             ofd.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
+            ofd.AddExtension = true;
+            ofd.CheckPathExists = true;
+            ofd.FilterIndex = 1;
             ofd.FilterIndex = 2;
             ofd.RestoreDirectory = true;
+            ofd.OverwritePrompt = false;
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
