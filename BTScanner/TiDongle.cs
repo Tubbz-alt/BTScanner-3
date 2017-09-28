@@ -69,7 +69,7 @@ namespace tiota
         IGUI _gui = null;
         Thread _receiveParserThread = null;
         List<byte> rxRelay = new List<byte>();
-        byte[] buffer = new byte[1000];
+        byte[] buffer = new byte[5000];
         int ByteCount = 0;
 
         protected bool init_success = false;
