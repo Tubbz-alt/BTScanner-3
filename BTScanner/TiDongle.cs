@@ -176,7 +176,7 @@ namespace tiota
                         {
                             if (ByteCount < TiCommand.API_RECEIVE_HEADER_LENGTH)
                             {
-                                _port.Read(buffer, ByteCount, 1);
+                                buffer[ByteCount] = _port.ReadByte();
                                 ByteCount++;
                             }
                             else if (ByteCount == TiCommand.API_RECEIVE_HEADER_LENGTH)
@@ -186,7 +186,7 @@ namespace tiota
                                 {
                                     for (int i = 0; i < PacketSize; i++)
                                     {
-                                        _port.Read(buffer, ByteCount + 1, 1);
+                                        buffer[ByteCount + 1] = _port.ReadByte();
                                         ByteCount++;
                                     }
                                     ByteCount = 0;
@@ -210,6 +210,12 @@ namespace tiota
                 catch (Exception ex)
                 {
                     logger.Warn(ex, "Error during receive bytes");
+                    ByteCount = 0;
+                    Array.Clear(buffer, 0, buffer.Length);
+                    while (_port.BytesToRead > 0)
+                    {
+                        _port.ReadByte();
+                    }
                 }
             }
         }
