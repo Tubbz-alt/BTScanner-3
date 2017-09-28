@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using static tiota.HCISerializer.HCICmds;
-using static tiota.HCISerializer.HCICmds.GAPCmds;
+using static tiota.HCICmds.GAPCmds;
+using static tiota.HCICmds;
+
 
 namespace tiota
 {

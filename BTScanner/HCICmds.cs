@@ -37,11 +37,11 @@ namespace tiota
         public Byte dataLength = 0;  // fixed length data only
         public UInt16 opCodeValue = 0;
 
-        public byte [] GetBuffer()
+        public byte[] GetBuffer()
         {
-            
+
             SortedList<int, object> list = new SortedList<int, object>();
-            byte [] buff = new byte[256];
+            byte[] buff = new byte[256];
             MemoryStream ms = new MemoryStream(buff);
             BinaryWriter bw = new BinaryWriter(ms);
             bw.Write((byte)1);
@@ -57,7 +57,7 @@ namespace tiota
                     if (att.GetType() == typeof(Serialize))
                     {
                         Serialize serialize = (Serialize)att;
-                        Object val = null; 
+                        Object val = null;
                         switch (prop.MemberType)
                         {
                             case MemberTypes.Property:
@@ -75,7 +75,7 @@ namespace tiota
                         }
                         list.Add(serialize.number, val);
                     }
-                    
+
                 }
             }
 
@@ -97,23 +97,24 @@ namespace tiota
                     bw.Write((UInt32)val);
                 }
 
-                else if (t == typeof(byte []))
+                else if (t == typeof(byte[]))
                 {
-                    bw.Write((byte [])val);
+                    bw.Write((byte[])val);
                 }
                 else
                 {
-                    bw.Write((byte)((int)val)); 
+                    bw.Write((byte)((int)val));
                 }
             }
-            
+
             long i = ms.Position;
             bw.Close();
-            buff[3] = (byte)(i-4);
+            buff[3] = (byte)(i - 4);
 
             byte[] fix_buff = new byte[i];
             Array.Copy(buff, fix_buff, i);
             return fix_buff;
+        }
     }
 
     public class HCICmds
@@ -1173,28 +1174,22 @@ namespace tiota
                 private HCIExt_RxGain _rxGain = HCICmds.HCIExt_RxGain.HCI_EXT_RX_GAIN_STD;
                 [Description("Rx Gain (1 Byte) - Set the RF receiver gain")]
                 [DefaultValueAttribute(HCICmds.HCIExt_RxGain.HCI_EXT_RX_GAIN_STD)]
+                [Serialize(number =1)]
                 public HCIExt_RxGain rxGain
                 {
                     get { return _rxGain; }
                     set { _rxGain = value; }
                 }
-
-                public byte [] GetBuffer()
-                {
-                    byte[] buff = new byte[dataLength + 4];
-                    BinaryWriter bw = new BinaryWriter(new MemoryStream(buff));
-                    bw.Write(dataLength);
-                    bw.Write(opCodeValue);
-                    bw.Write((byte)rxGain);
-                    return buff;
-                }
             }
             /***********************************************************/
-            public class HCIExt_SetTxPower
+            public class HCIExt_SetTxPower : HCISerializer
             {
+                public HCIExt_SetTxPower() : base ()
+                {
+                    dataLength = 0x01;  // fixed length data only
+                    opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_SetTxPower;
+                }
                 public string cmdName = "HCIExt_SetTxPower";
-                public Byte dataLength = 0x01;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_SetTxPower;
                 [Description("HCIExt_SetTxPower")]
                 public string opCode
                 {
@@ -1204,6 +1199,7 @@ namespace tiota
                 private HCIExt_TxPower _txPower = HCICmds.HCIExt_TxPower.HCI_EXT_TX_POWER_0_DBM;
                 [Description("Tx Power dBm (1 Byte) - Set the RF transmitter output power")]
                 [DefaultValueAttribute(HCICmds.HCIExt_TxPower.HCI_EXT_TX_POWER_0_DBM)]
+                [Serialize(number = 1)]
                 public HCIExt_TxPower txPower
                 {
                     get { return _txPower; }
@@ -1212,11 +1208,14 @@ namespace tiota
             }
 
             /***********************************************************/
-            public class HCIExt_OnePktPerEvt
+            public class HCIExt_OnePktPerEvt:HCISerializer
             {
+                public HCIExt_OnePktPerEvt() : base ()
+                {
+                    dataLength = 0x01;  // fixed length data only
+                    opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_OnePktPerEvt;
+                }
                 public string cmdName = "HCIExt_OnePktPerEvt";
-                public Byte dataLength = 0x01;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_OnePktPerEvt;
                 [Description("HCIExt_OnePktPerEvt")]
                 public string opCode
                 {
@@ -1226,6 +1225,7 @@ namespace tiota
                 private HCIExt_OnePktPerEvtCtrl _control = HCICmds.HCIExt_OnePktPerEvtCtrl.HCI_EXT_DISABLE_ONE_PKT_PER_EVT;
                 [Description("Control (1 Byte) - Enable or disable allowing only one packet per event.")]
                 [DefaultValueAttribute(HCICmds.HCIExt_OnePktPerEvtCtrl.HCI_EXT_DISABLE_ONE_PKT_PER_EVT)]
+                [Serialize (number = 1)]
                 public HCIExt_OnePktPerEvtCtrl control
                 {
                     get { return _control; }
@@ -1234,11 +1234,14 @@ namespace tiota
             }
 
             /***********************************************************/
-            public class HCIExt_ClkDivideOnHalt
+            public class HCIExt_ClkDivideOnHalt : HCISerializer
             {
+                public HCIExt_ClkDivideOnHalt() : base ()
+                {
+                    dataLength = 0x01;  // fixed length data only
+                    opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_ClkDivideOnHalt;
+                }
                 public string cmdName = "HCIExt_ClkDivideOnHalt";
-                public Byte dataLength = 0x01;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_ClkDivideOnHalt;
                 [Description("HCIExt_ClkDivideOnHalt")]
                 public string opCode
                 {
@@ -1248,6 +1251,7 @@ namespace tiota
                 private HCIExt_ClkDivideOnHaltCtrl _control = HCICmds.HCIExt_ClkDivideOnHaltCtrl.HCI_EXT_DISABLE_CLK_DIVIDE_ON_HALT;
                 [Description("Control (1 Byte) - Enable or disable clock division on halt.")]
                 [DefaultValueAttribute(HCICmds.HCIExt_ClkDivideOnHaltCtrl.HCI_EXT_DISABLE_CLK_DIVIDE_ON_HALT)]
+                [Serialize(number = 1)]
                 public HCIExt_ClkDivideOnHaltCtrl control
                 {
                     get { return _control; }
@@ -1256,11 +1260,14 @@ namespace tiota
             }
 
             /***********************************************************/
-            public class HCIExt_DelayPostProc
+            public class HCIExt_DelayPostProc : HCISerializer
             {
+                public HCIExt_DelayPostProc() : base ()
+                {
+                    dataLength = 0x01;  // fixed length data only
+                    opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_DelayPostProc;
+                }
                 public string cmdName = "HCIExt_DelayPostProc";
-                public Byte dataLength = 0x01;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_DelayPostProc;
                 [Description("HCIExt_DelayPostProc")]
                 public string opCode
                 {
@@ -1270,6 +1277,7 @@ namespace tiota
                 private HCIExt_DelayPostProcCtrl _control = HCICmds.HCIExt_DelayPostProcCtrl.HCI_EXT_DISABLE_DELAY_POST_PROC;
                 [Description("Control (1 Byte) - Enable or disable delaying post processing (if possible).")]
                 [DefaultValueAttribute(HCICmds.HCIExt_DelayPostProcCtrl.HCI_EXT_DISABLE_DELAY_POST_PROC)]
+                [Serialize(number = 1)]
                 public HCIExt_DelayPostProcCtrl control
                 {
                     get { return _control; }
@@ -1278,11 +1286,14 @@ namespace tiota
             }
 
             /***********************************************************/
-            public class HCIExt_Decrypt
+            public class HCIExt_Decrypt : HCISerializer
             {
+                public HCIExt_Decrypt() : base ()
+                {
+                    dataLength = 0x0;  // fixed length data only
+                    opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_Decrypt;
+                }
                 public string cmdName = "HCIExt_Decrypt";
-                public Byte dataLength = 0x00;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_Decrypt;
                 [Description("HCIExt_Decrypt")]
                 public string opCode
                 {
@@ -1311,11 +1322,14 @@ namespace tiota
             }
 
             /***********************************************************/
-            public class HCIExt_SetLocalSupportedFeatures
+            public class HCIExt_SetLocalSupportedFeatures : HCISerializer
             {
+                public HCIExt_SetLocalSupportedFeatures() : base ()
+                {
+                    dataLength = 0x08;  // fixed length data only
+                    opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_SetLocalSupportedFeatures;
+                }
                 public string cmdName = "HCIExt_SetLocalSupportedFeatures";
-                public Byte dataLength = 0x08;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_SetLocalSupportedFeatures;
                 [Description("HCIExt_SetLocalSupportedFeatures")]
                 public string opCode
                 {
@@ -1323,10 +1337,11 @@ namespace tiota
                 }
 
                 public const Byte localFeaturesSize = 8;
-                private string _localFeatures = "01:00:00:00:00:00:00:00";
+                private byte [] _localFeatures = { 01, 00, 00, 00, 00, 00, 00, 00 };
                 [Description("Local Features (8 Bytes) - Set the Controller’s Local Supported Features.")]
                 [DefaultValueAttribute("01:00:00:00:00:00:00:00")]
-                public string localFeatures
+                [Serialize (number =1)]
+                public byte [] localFeatures
                 {
                     get { return _localFeatures; }
                     set { _localFeatures = value; }
@@ -1334,11 +1349,14 @@ namespace tiota
             }
 
             /***********************************************************/
-            public class HCIExt_SetFastTxRespTime
+            public class HCIExt_SetFastTxRespTime : HCISerializer
             {
+                public HCIExt_SetFastTxRespTime() : base ()
+                {
+                    dataLength = 0x01;  // fixed length data only
+                    opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_SetFastTxRespTime;
+                }
                 public string cmdName = "HCIExt_SetFastTxRespTime";
-                public Byte dataLength = 0x01;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_SetFastTxRespTime;
                 [Description("HCIExt_SetFastTxRespTime")]
                 public string opCode
                 {
@@ -1348,6 +1366,7 @@ namespace tiota
                 private HCIExt_SetFastTxRespTimeCtrl _control = HCICmds.HCIExt_SetFastTxRespTimeCtrl.HCI_EXT_DISABLE_FAST_TX_RESP_TIME;
                 [Description("Control (1 Byte) - Enable or disable the fast Tx response time feature.")]
                 [DefaultValueAttribute(HCICmds.HCIExt_SetFastTxRespTimeCtrl.HCI_EXT_DISABLE_FAST_TX_RESP_TIME)]
+                [Serialize(number = 1)]
                 public HCIExt_SetFastTxRespTimeCtrl control
                 {
                     get { return _control; }
@@ -1356,11 +1375,14 @@ namespace tiota
             }
 
             /***********************************************************/
-            public class HCIExt_ModemTestTx
+            public class HCIExt_ModemTestTx : HCISerializer
             {
+                public HCIExt_ModemTestTx() : base ()
+                {
+                    dataLength = 0x02;  // fixed length data only
+                    opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_ModemTestTx;
+                }
                 public string cmdName = "HCIExt_ModemTestTx";
-                public Byte dataLength = 0x02;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_ModemTestTx;
                 [Description("HCIExt_ModemTestTx")]
                 public string opCode
                 {
@@ -1370,6 +1392,7 @@ namespace tiota
                 private HCIExt_CwMode _cwMode = HCICmds.HCIExt_CwMode.HCI_EXT_TX_MODULATED_CARRIER;
                 [Description("CW Mode (1 Byte) - Set Modem Test CW modulation.")]
                 [DefaultValueAttribute(HCICmds.HCIExt_CwMode.HCI_EXT_TX_MODULATED_CARRIER)]
+                [Serialize(number = 1)]
                 public HCIExt_CwMode cwMode
                 {
                     get { return _cwMode; }
@@ -1379,6 +1402,7 @@ namespace tiota
                 private Byte _txRfChannel = 0x00;
                 [Description("Tx RF Channel (1 Byte) - Channel Number 0 to 39")]
                 [DefaultValueAttribute((Byte)0x00)]
+                [Serialize(number = 2)]
                 public Byte txRfChannel
                 {
                     get { return _txRfChannel; }
@@ -1386,11 +1410,14 @@ namespace tiota
                 }
             }
             /***********************************************************/
-            public class HCIExt_ModemHopTestTx
+            public class HCIExt_ModemHopTestTx : HCISerializer
             {
+                public HCIExt_ModemHopTestTx() : base ()
+                {
+                    dataLength = 0x0;  // fixed length data only
+                    opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_ModemHopTestTx;
+                }
                 public string cmdName = "HCIExt_ModemHopTestTx";
-                public Byte dataLength = 0x00;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_ModemHopTestTx;
                 [Description("HCIExt_ModemHopTestTx")]
                 public string opCode
                 {
@@ -2868,1019 +2895,1019 @@ namespace tiota
             }
             #endregion
         }
-            #endregion // GATT Commands
+        #endregion // GATT Commands
 
-            #region GAP Commands
+        #region GAP Commands
+        /***********************************************************/
+        public class GAPCmds
+        /***********************************************************/
+        {
+            #region GAP_DeviceInit
             /***********************************************************/
-            public class GAPCmds
-            /***********************************************************/
+            public class GAP_DeviceInit : HCISerializer
             {
-                #region GAP_DeviceInit
-                /***********************************************************/
-                public class GAP_DeviceInit : HCISerializer
+                public GAP_DeviceInit() : base()
                 {
-                    public GAP_DeviceInit() : base()
-                    {
-                        dataLength = 0x06;  // fixed length data only
-                        opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_DeviceInit;
-                    }
-
-                    public string cmdName = "GAP_DeviceInit";
-
-                    //public Byte dataLength = 0x06;  // fixed length data only
-                    //public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_DeviceInit;
-                    
-
-                    [Description("GAP_DeviceInit")]
-                    public string opCode
-                    {
-                        get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                    }
-
-                    private GAP_Profile _profileRole = GAP_Profile.Central;
-                    [Description("Profile Role (1 Byte) - Bit Mask - GAP profile role")]
-                    [DefaultValueAttribute(GAP_Profile.Central)]
-                    [Category("ProfileRole")]
-                    [Serialize(number = 1)]
-                    public GAP_Profile profileRole
-                    {
-                        get { return _profileRole; }
-                        set { _profileRole = value; }
-                    }
-
-                    private Byte _maxScanResponses = 0x20;
-                    [Description("Max Scan Responses (1 Byte) - The maximun can responses we can receive during a device discovery.")]
-                    [DefaultValueAttribute((Byte)0x20)]
-                    [Serialize(number = 2)]
-                    public Byte maxScanResponses
-                    {
-                        get { return _maxScanResponses; }
-                        set { _maxScanResponses = value; }
-                    }
-
-                    public const Byte irkSize = 16;
-                    private byte[] _irk = HCICmds.Empty16Bytes;
-                    [Description("IRK (16 Bytes) - Identify Resolving Key - 0 if generate the key ")]
-                    [DefaultValueAttribute(HCICmds.Empty16BytesStr)]
-                    [Serialize(number = 3)]
-                    public byte[] irk
-                    {
-                        get { return _irk; }
-                        set { _irk = value; }
-                    }
-
-                    public const Byte csrkSize = 16;
-                    private byte[] _csrk = HCICmds.Empty16Bytes;
-                    [Description("CSRK (16 Bytes) - Connection Signature Resolving Key - 0 if generate the key ")]
-                    [DefaultValueAttribute(HCICmds.Empty16BytesStr)]
-                    [Serialize(number = 4)]
-                    public byte[] csrk
-                    {
-                        get { return _csrk; }
-                        set { _csrk = value; }
-                    }
-
-                    private UInt32 _signCounter = (UInt32)1;
-                    private const string _signCounter_default = "1";
-                    [Description("Signature Counter (4 Bytes) - 32 bit Signature Counter")]
-                    [DefaultValueAttribute(typeof(UInt32), _signCounter_default)]
-                    [Serialize(number = 5)]
-                    public UInt32 signCounter
-                    {
-                        get { return _signCounter; }
-                        set { _signCounter = value; }
-                    }
+                    dataLength = 0x06;  // fixed length data only
+                    opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_DeviceInit;
                 }
-            }
-            #endregion  // GAP_DeviceInit
 
-            #region GAP_ConfigDeviceAddr
-            /***********************************************************/
-            public class GAP_ConfigDeviceAddr
-            {
-                public string cmdName = "GAP_ConfigDeviceAddr";
-                public Byte dataLength = 0x07;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_ConfigDeviceAddr;
-                [Description("GAP_ConfigDeviceAddr")]
+                public string cmdName = "GAP_DeviceInit";
+
+                //public Byte dataLength = 0x06;  // fixed length data only
+                //public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_DeviceInit;
+
+
+                [Description("GAP_DeviceInit")]
                 public string opCode
                 {
                     get { return ZeroXStr + opCodeValue.ToString("X4"); }
                 }
 
-                private GAP_AddrType _addrType = GAP_AddrType.Public;
-                [Description("Addr Type (1 Byte) - Address type")]
-                [DefaultValueAttribute(GAP_AddrType.Public)]
-                public GAP_AddrType addrType
-                {
-                    get { return _addrType; }
-                    set { _addrType = value; }
-                }
-
-                private string _addr = HCICmds.EmptyBDAStr;
-                [Description("Addr (6 Bytes) - BDA of the intended address")]
-                [DefaultValueAttribute(HCICmds.EmptyBDAStr)]
-                public string addr
-                {
-                    get { return _addr; }
-                    set { _addr = value; }
-                }
-            }
-            #endregion  // GAP_ConfigDeviceAddr
-
-            #region GAP_DeviceDiscoveryRequest
-            /***********************************************************/
-            public class GAP_DeviceDiscoveryRequest : HCISerializer
-            {
-                public GAP_DeviceDiscoveryRequest() : base()
-                {
-                    dataLength = 0x03;  // fixed length data only
-                    opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_DeviceDiscoveryRequest;
-                }
-                public string cmdName = "GAP_DeviceDiscoveryRequest";
-                [Description("GAP_DeviceDiscoveryRequest")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-
-                private GAP_DiscoveryMode _mode = GAP_DiscoveryMode.All;
-                [Description("Mode (1 Byte) - Discovery Mode")]
-                [DefaultValueAttribute(GAP_DiscoveryMode.All)]
-                [Category("Mode")]
+                private GAP_Profile _profileRole = GAP_Profile.Central;
+                [Description("Profile Role (1 Byte) - Bit Mask - GAP profile role")]
+                [DefaultValueAttribute(GAP_Profile.Central)]
+                [Category("ProfileRole")]
                 [Serialize(number = 1)]
-                public GAP_DiscoveryMode mode
+                public GAP_Profile profileRole
                 {
-                    get { return _mode; }
-                    set { _mode = value; }
+                    get { return _profileRole; }
+                    set { _profileRole = value; }
                 }
 
-                private GAP_EnableDisable _nameMode = GAP_EnableDisable.Enable;
-                [Description("Name Mode (1 Byte) - Name Mode Enable/Disable")]
-                [DefaultValueAttribute(GAP_EnableDisable.Enable)]
-                [Category("NameMode")]
+                private Byte _maxScanResponses = 0x20;
+                [Description("Max Scan Responses (1 Byte) - The maximun can responses we can receive during a device discovery.")]
+                [DefaultValueAttribute((Byte)0x20)]
                 [Serialize(number = 2)]
-                public GAP_EnableDisable nameMode
+                public Byte maxScanResponses
                 {
-                    get { return _nameMode; }
-                    set { _nameMode = value; }
+                    get { return _maxScanResponses; }
+                    set { _maxScanResponses = value; }
                 }
 
-                private GAP_EnableDisable _whiteList = GAP_EnableDisable.Disable;
-                [Description("White List (1 byte) - White List Enable/Disable - Enabled to only allow advertisements from devices in the white list.")]
-                [DefaultValueAttribute(GAP_EnableDisable.Disable)]
-                [Category("White List")]
+                public const Byte irkSize = 16;
+                private byte[] _irk = HCICmds.Empty16Bytes;
+                [Description("IRK (16 Bytes) - Identify Resolving Key - 0 if generate the key ")]
+                [DefaultValueAttribute(HCICmds.Empty16BytesStr)]
                 [Serialize(number = 3)]
-                public GAP_EnableDisable whiteList
+                public byte[] irk
                 {
-                    get { return _whiteList; }
-                    set { _whiteList = value; }
-                }
-            }
-            #endregion  // GAP_DeviceDiscoveryRequest
-
-            #region GAP_DeviceDiscoveryCancel
-            /***********************************************************/
-            public class GAP_DeviceDiscoveryCancel : HCISerializer
-            {
-                public GAP_DeviceDiscoveryCancel() : base()
-                {
-                    dataLength = 0x00;  // fixed length data only
-                    opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_DeviceDiscoveryCancel;
-                }
-                public string cmdName = "GAP_DeviceDiscoveryCancel";
-                
-                [Description("GAP_DeviceDiscoveryCancel - Cancel the current device discovery")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-            }
-            #endregion  // GAP_DeviceDiscoveryCancel
-
-            #region GAP_MakeDiscoverable
-            /***********************************************************/
-            public class GAP_MakeDiscoverable
-            {
-                public string cmdName = "GAP_MakeDiscoverable";
-                public Byte dataLength = 0x09;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_MakeDiscoverable;
-                [Description("GAP_MakeDiscoverable")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-                private GAP_EventType _eventType = GAP_EventType.GAP_EVENT_CONN_UNDIRECT_AD;
-                [Description("Event Type (1 Byte) - Advertising event type")]
-                [DefaultValueAttribute(GAP_EventType.GAP_EVENT_CONN_UNDIRECT_AD)]
-                public GAP_EventType eventType
-                {
-                    get { return _eventType; }
-                    set { _eventType = value; }
-                }
-
-                private GAP_AddrType _initiatorAddrType = GAP_AddrType.Public;
-                [Description("Initiator Address Type (1 Byte) - Address type")]
-                [DefaultValueAttribute(GAP_AddrType.Public)]
-                public GAP_AddrType initiatorAddrType
-                {
-                    get { return _initiatorAddrType; }
-                    set { _initiatorAddrType = value; }
-                }
-
-                public const Byte initiatorAddrSize = 6;
-                private string _initiatorAddr = HCICmds.EmptyBDAStr;
-                [Description("Initiator's Address (6 Bytes) - BDA of the Initiator")]
-                [DefaultValueAttribute(HCICmds.EmptyBDAStr)]
-                public string initiatorAddr
-                {
-                    get { return _initiatorAddr; }
-                    set { _initiatorAddr = value; }
-                }
-
-                // this is a bit field
-                private Byte _channelMap = 0x07;
-                [Description("Channel Map (1 Byte) - Bit mask - 0x07 all channels")]
-                [DefaultValueAttribute((Byte)0x07)]
-                public Byte channelMap
-                {
-                    get { return _channelMap; }
-                    set { _channelMap = value; }
-                }
-
-                private GAP_FilterPolicy _filterPolicy = GAP_FilterPolicy.GAP_FILTER_POLICY_ALL;
-                [Description("Filter Policy (1 Byte) - Filer Policy. Ignored when directed advertising is used.")]
-                [DefaultValueAttribute(GAP_FilterPolicy.GAP_FILTER_POLICY_ALL)]
-                public GAP_FilterPolicy filterPolicy
-                {
-                    get { return _filterPolicy; }
-                    set { _filterPolicy = value; }
-                }
-            }
-            #endregion  // GAP_MakeDiscoverable
-
-            #region GAP_UpdateAdvertisingData
-            /***********************************************************/
-            public class GAP_UpdateAdvertisingData
-            {
-                public string cmdName = "GAP_UpdateAdvertisingData";
-                public Byte dataLength = 0x02;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_UpdateAdvertisingData;
-                [Description("GAP_UpdateAdvertisingData")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-
-                private GAP_AvertAdType _adType = GAP_AvertAdType.GAPADVERT_SCAN_RSP_DATA;
-                [Description("Ad Type (1 Byte)")]
-                [DefaultValueAttribute(GAP_AvertAdType.GAPADVERT_SCAN_RSP_DATA)]
-                public GAP_AvertAdType adType
-                {
-                    get { return _adType; }
-                    set { _adType = value; }
-                }
-
-                private Byte _dataLen = 0x00;
-                [Description("DataLen (1 Byte) - The length of the data (0 - 31)")]
-                [DefaultValueAttribute((Byte)0x00)]
-                public Byte dataLen
-                {
-                    get { return _dataLen; }
-                    set { _dataLen = value; }
-                }
-
-                private string _advertData = "02:01:06";
-                [Description("Advert Data (x Bytes) - Raw Advertising Data")]
-                [DefaultValueAttribute("02:01:06")]
-                public string advertData
-                {
-                    get { return _advertData; }
-                    set { _advertData = value; }
-                }
-            }
-            #endregion  // GAP_UpdateAdvertisingData
-
-            #region GAP_EndDiscoverable
-            /***********************************************************/
-            public class GAP_EndDiscoverable
-            {
-                public string cmdName = "GAP_EndDiscoverable";
-                public Byte dataLength = 0x00;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_EndDiscoverable;
-                [Description("GAP_EndDiscoverable")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-            }
-            #endregion  // GAP_UpdateAdvertisingData
-
-            #region GAP_EstablishLinkRequest
-            /***********************************************************/
-            public class GAP_EstablishLinkRequest : HCISerializer
-            {
-                public GAP_EstablishLinkRequest() : base()
-                {
-                    dataLength = 0x09;  // fixed length data only
-                    opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_EstablishLinkRequest;
-                }
-                public string cmdName = "GAP_EstablishLinkRequest";
-               
-                [Description("GAP_EstablishLinkRequest")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-
-                private GAP_EnableDisable _highDutyCycle = GAP_EnableDisable.Disable;
-                [Description("High Duty Cycle (1 Byte) - A Central Device may use high duty cycle scan parameters in order to achieve low latency connection time with a Peripheral device using Directed Link Establishment.")]
-                [DefaultValueAttribute(GAP_EnableDisable.Disable)]
-                [Serialize(number = 1)]
-                public GAP_EnableDisable highDutyCycle
-                {
-                    get { return _highDutyCycle; }
-                    set { _highDutyCycle = value; }
-                }
-
-                private GAP_EnableDisable _whiteList = GAP_EnableDisable.Disable;
-                [Description("White List (1 Byte)")]
-                [DefaultValueAttribute(GAP_EnableDisable.Disable)]
-                [Serialize(number = 2)]
-                public GAP_EnableDisable whiteList
-                {
-                    get { return _whiteList; }
-                    set { _whiteList = value; }
-                }
-
-                private GAP_AddrType _addrTypePeer = GAP_AddrType.Public;
-                [Description("Addr Type (1 Byte) - Address type")]
-                [DefaultValueAttribute(GAP_AddrType.Public)]
-                [Serialize(number = 3)]
-                public GAP_AddrType addrTypePeer
-                {
-                    get { return _addrTypePeer; }
-                    set { _addrTypePeer = value; }
-                }
-
-                private byte [] _peerAddr = HCICmds.EmptyBDA;
-                [Description("Peer's Address (6 Bytes) - BDA of the peer")]
-                [DefaultValueAttribute(HCICmds.EmptyBDAStr)]
-                [Serialize(number = 4)]
-                public byte [] peerAddr
-                {
-                    get { return _peerAddr; }
-                    set { _peerAddr = value; }
-                }
-            }
-            #endregion  // GAP_EstablishLinkRequest
-
-            #region GAP_TerminateLinkRequest
-            /***********************************************************/
-            public class GAP_TerminateLinkRequest : HCISerializer
-            {
-                public GAP_TerminateLinkRequest() : base()
-                {
-                    dataLength = 0x02;  // fixed length data only
-                    opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_TerminateLinkRequest;
-                }
-                public string cmdName = "GAP_TerminateLinkRequest";
-                [Description("GAP_TerminateLinkRequest")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-
-                private UInt16 _connHandle = (UInt16)GAP_ConnHandle.Default;
-                private const string _connHandle_default = "0x0000";
-                [Description("Connection Handle (2 Bytes) - Handle of the connection")]
-                [DefaultValueAttribute(typeof(UInt16), _connHandle_default)]
-                [Serialize(number = 1)]
-                public UInt16 connHandle
-                {
-                    get { return _connHandle; }
-                    set { _connHandle = value; }
-                }
-            }
-            #endregion  // GAP_TerminateLinkRequest
-
-            #region GAP_Authenticate
-            /***********************************************************/
-            public class GAP_Authenticate
-            {
-                public string cmdName = "GAP_Authenticate";
-                public Byte dataLength = 0x1D;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_Authenticate;
-                [Description("GAP_Authenticate")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-
-                private UInt16 _connHandle = (UInt16)GAP_ConnHandle.Default;
-                private const string _connHandle_default = "0x0000";
-                [Description("Connection Handle (2 Bytes) - Handle of the connection")]
-                [DefaultValueAttribute(typeof(UInt16), _connHandle_default)]
-                public UInt16 connHandle
-                {
-                    get { return _connHandle; }
-                    set { _connHandle = value; }
-                }
-
-                private GAP_IOCaps _secReq_ioCaps = GAP_IOCaps.NoInputNoOutput;
-                [Description("IOCaps (1 Byte) - Defines the values which are used when exchanging IO capabilities")]
-                [DefaultValueAttribute(GAP_IOCaps.NoInputNoOutput)]
-                public GAP_IOCaps secReq_ioCaps
-                {
-                    get { return _secReq_ioCaps; }
-                    set { _secReq_ioCaps = value; }
-                }
-
-                private GAP_TrueFalse _secReq_oobAvailable = GAP_TrueFalse.False;
-                [Description("OOB Available (1 Byte) - Enable if Out-of-band key available")]
-                [DefaultValueAttribute(GAP_TrueFalse.False)]
-                public GAP_TrueFalse secReq_oobAvailable
-                {
-                    get { return _secReq_oobAvailable; }
-                    set { _secReq_oobAvailable = value; }
-                }
-
-                public const Byte secReq_oobSize = 16;
-                private string _secReq_oob = "4d:9f:88:5a:6e:03:12:fe:00:00:00:00:00:00:00:00";
-                [Description("OOB Key (16 Bytes) The OOB key value")]
-                [DefaultValueAttribute("4d:9f:88:5a:6e:03:12:fe:00:00:00:00:00:00:00:00")]
-                public string secReq_oob
-                {
-                    get { return _secReq_oob; }
-                    set { _secReq_oob = value; }
-                }
-
-                // this is a bit field
-                private Byte _secReq_authReq = (Byte)GAP_AuthReq.Bonding;
-                [Description("Auth Req (1 Byte) - A bit field that indicates the requested security properties for STK and GAP bonding information.")]
-                [DefaultValueAttribute((Byte)GAP_AuthReq.Bonding)]
-                public Byte secReq_authReq
-                {
-                    get { return _secReq_authReq; }
-                    set { _secReq_authReq = value; }
-                }
-
-                private Byte _secReq_maxEncKeySize = 16;
-                [Description("Max Enc Key Size (16 Bytes) - This value defines the maximum encryption key size in octets\nthat the device can support.  Range: 7 to 16.")]
-                [DefaultValueAttribute((Byte)16)]
-                public Byte secReq_maxEncKeySize
-                {
-                    get { return _secReq_maxEncKeySize; }
-                    set { _secReq_maxEncKeySize = value; }
-                }
-
-                // this is a bit field
-                private Byte _secReq_keyDist = 63;
-                [Description("Key Distribution (1 Byte) - The Key Distribution field indicates which keys will be distributed.")]
-                [DefaultValueAttribute((Byte)63)]
-                public Byte secReq_keyDist
-                {
-                    get { return _secReq_keyDist; }
-                    set { _secReq_keyDist = value; }
-                }
-
-                private GAP_EnableDisable _pairReq_Enable = GAP_EnableDisable.Disable;
-                [Description("Pairing Request (1 Byte) - Enable - if Pairing Request has already been received\nand to respond with a Pairing Response.\n This should only be used in a Peripheral device.")]
-                [DefaultValueAttribute(GAP_EnableDisable.Disable)]
-                public GAP_EnableDisable pairReq_Enable
-                {
-                    get { return _pairReq_Enable; }
-                    set { _pairReq_Enable = value; }
-                }
-
-                private GAP_IOCaps _pairReq_ioCaps = GAP_IOCaps.NoInputNoOutput;
-                [Description("IO Capabilities (1 Byte) - Defines the values which are used when exchanging IO capabilities")]
-                [DefaultValueAttribute(GAP_IOCaps.NoInputNoOutput)]
-                public GAP_IOCaps pairReq_ioCaps
-                {
-                    get { return _pairReq_ioCaps; }
-                    set { _pairReq_ioCaps = value; }
-                }
-
-                private GAP_EnableDisable _pairReq_oobDataFlag = GAP_EnableDisable.Disable;
-                [Description("OOB data Flag (1 Byte) - Enable if Out-of-band key available")]
-                [DefaultValueAttribute(GAP_EnableDisable.Disable)]
-                public GAP_EnableDisable pairReq_oobDataFlag
-                {
-                    get { return _pairReq_oobDataFlag; }
-                    set { _pairReq_oobDataFlag = value; }
-                }
-
-                private Byte _pairReq_authReq = 0x01;
-                [Description("Auth Req (1 Byte) - Bit field that indicates the requested security properties\nfor STK and GAP bonding information.")]
-                [DefaultValueAttribute((Byte)0x01)]
-                public Byte pairReq_authReq
-                {
-                    get { return _pairReq_authReq; }
-                    set { _pairReq_authReq = value; }
-                }
-
-                private Byte _pairReq_maxEncKeySize = 16;
-                [Description("Max Enc Key Size (1 Byte) - This value defines the maximun encryption key size in octects\nthat the device can support.")]
-                [DefaultValueAttribute((Byte)16)]
-                public Byte pairReq_maxEncKeySize
-                {
-                    get { return _pairReq_maxEncKeySize; }
-                    set { _pairReq_maxEncKeySize = value; }
-                }
-
-                // this is a bit field
-                private Byte _pairReq_keyDist = 63;
-                [Description("Key Dist (1 Byte) - The Key Distribution field indicates which keys will be distributed.")]
-                [DefaultValueAttribute((Byte)63)]
-                public Byte pairReq_keyDist
-                {
-                    get { return _pairReq_keyDist; }
-                    set { _pairReq_keyDist = value; }
-                }
-            }
-            #endregion  // GAP_Authenticate
-
-            #region GAP_PasskeyUpdate
-            /***********************************************************/
-            public class GAP_PasskeyUpdate
-            {
-                public string cmdName = "GAP_PasskeyUpdate";
-                public Byte dataLength = 0x08;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_PasskeyUpdate;
-                [Description("GAP_PasskeyUpdate")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-
-                private UInt16 _connHandle = (UInt16)GAP_ConnHandle.Default;
-                private const string _connHandle_default = "0x0000";
-                [Description("Connection Handle (2 Bytes) - Handle of the connection")]
-                [DefaultValueAttribute(typeof(UInt16), _connHandle_default)]
-                public UInt16 connHandle
-                {
-                    get { return _connHandle; }
-                    set { _connHandle = value; }
-                }
-
-                public const Byte passKeySize = 6;
-                private string _passKey = "000000";
-                [Description("Pairing Passkey (6 Bytes) - string of numbers 0-9. '019655' is a value of 0x4CC7\n")]
-                [DefaultValueAttribute("000000")]
-                public string passKey
-                {
-                    get { return _passKey; }
-                    set { _passKey = value; }
-                }
-            }
-            #endregion // GAP_PasskeyUpdate
-
-            #region GAP_SlaveSecurityRequest
-            /***********************************************************/
-            public class GAP_SlaveSecurityRequest
-            {
-                public string cmdName = "GAP_SlaveSecurityRequest";
-                public Byte dataLength = 0x03;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_SlaveSecurityRequest;
-                [Description("GAP_SlaveSecurityRequest")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-
-                private UInt16 _connHandle = (UInt16)GAP_ConnHandle.Default;
-                private const string _connHandle_default = "0x0000";
-                [Description("Connection Handle (2 Bytes) - Handle of the connection")]
-                [DefaultValueAttribute(typeof(UInt16), _connHandle_default)]
-                public UInt16 connHandle
-                {
-                    get { return _connHandle; }
-                    set { _connHandle = value; }
-                }
-
-                // this is a bit field
-                private Byte _authReq = (Byte)GAP_AuthReq.Bonding;
-                [Description("AuthReq (1 Byte) - A bit field that indicates the requested security properties bonding information.")]
-                [DefaultValueAttribute((Byte)GAP_AuthReq.Bonding)]
-                public Byte authReq
-                {
-                    get { return _authReq; }
-                    set { _authReq = value; }
-                }
-            }
-            #endregion // GAP_SlaveSecurityRequest
-
-            #region GAP_Signable
-            /***********************************************************/
-            public class GAP_Signable
-            {
-                public string cmdName = "GAP_Signable";
-                public Byte dataLength = 0x07;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_Signable;
-                [Description("GAP_Signable")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-
-                private UInt16 _connHandle = (UInt16)GAP_ConnHandle.Default;
-                private const string _connHandle_default = "0x0000";
-                [Description("Connection Handle (2 Bytes) - Handle of the connection")]
-                [DefaultValueAttribute(typeof(UInt16), _connHandle_default)]
-                public UInt16 connHandle
-                {
-                    get { return _connHandle; }
-                    set { _connHandle = value; }
-                }
-
-                private GAP_AuthenticatedCsrk _authenticated = GAP_AuthenticatedCsrk.GAP_CSRK_NOT_AUTHENTICATED;
-                [Description("Authenticated (1 Byte) - Is the signing information authenticated.")]
-                [DefaultValueAttribute(GAP_AuthenticatedCsrk.GAP_CSRK_NOT_AUTHENTICATED)]
-                public GAP_AuthenticatedCsrk authenticated
-                {
-                    get { return _authenticated; }
-                    set { _authenticated = value; }
+                    get { return _irk; }
+                    set { _irk = value; }
                 }
 
                 public const Byte csrkSize = 16;
-                private string _csrk = HCICmds.Empty16BytesStr;
-                [Description("CSRK (16 Bytes) - Connection Signature Resolving Key for the connected device")]
+                private byte[] _csrk = HCICmds.Empty16Bytes;
+                [Description("CSRK (16 Bytes) - Connection Signature Resolving Key - 0 if generate the key ")]
                 [DefaultValueAttribute(HCICmds.Empty16BytesStr)]
-                public string csrk
+                [Serialize(number = 4)]
+                public byte[] csrk
                 {
                     get { return _csrk; }
                     set { _csrk = value; }
                 }
 
-                private UInt32 _signCounter = 0;
-                private const string _signCounter_default = "0";
-                [Description("Signature Counter (4 Bytes) - Sign Counter for the connected device")]
+                private UInt32 _signCounter = (UInt32)1;
+                private const string _signCounter_default = "1";
+                [Description("Signature Counter (4 Bytes) - 32 bit Signature Counter")]
                 [DefaultValueAttribute(typeof(UInt32), _signCounter_default)]
+                [Serialize(number = 5)]
                 public UInt32 signCounter
                 {
                     get { return _signCounter; }
                     set { _signCounter = value; }
                 }
             }
-            #endregion // GAP_Signable
+        }
+        #endregion  // GAP_DeviceInit
 
-            #region GAP_Bond
-            /***********************************************************/
-            public class GAP_Bond
+        #region GAP_ConfigDeviceAddr
+        /***********************************************************/
+        public class GAP_ConfigDeviceAddr
+        {
+            public string cmdName = "GAP_ConfigDeviceAddr";
+            public Byte dataLength = 0x07;  // fixed length data only
+            public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_ConfigDeviceAddr;
+            [Description("GAP_ConfigDeviceAddr")]
+            public string opCode
             {
-                public string cmdName = "GAP_Bond";
-                public Byte dataLength = 0x06;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_Bond;
-                [Description("GAP_Bond")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-
-                private UInt16 _connHandle = (UInt16)GAP_ConnHandle.Default;
-                private const string _connHandle_default = "0x0000";
-                [Description("Connection Handle (2 Bytes) - Handle of the connection")]
-                [DefaultValueAttribute(typeof(UInt16), _connHandle_default)]
-                public UInt16 connHandle
-                {
-                    get { return _connHandle; }
-                    set { _connHandle = value; }
-                }
-
-                private GAP_YesNo _authenticated = GAP_YesNo.No;
-                [Description("Authenticated (1 Byte) - Yes if the bond was authenticated")]
-                [DefaultValueAttribute(GAP_YesNo.No)]
-                public GAP_YesNo authenticated
-                {
-                    get { return _authenticated; }
-                    set { _authenticated = value; }
-                }
-
-                public const Byte secInfo_LTKLength = 16;
-                private string _secInfo_LTK = "4d:9f:88:5a:6e:03:12:fe:00:00:00:00:00:00:00:00";
-                [Description("secInfo_LTK (16 Bytes) - Long Term Key")]
-                [DefaultValueAttribute("4d:9f:88:5a:6e:03:12:fe:00:00:00:00:00:00:00:00")]
-                public string secInfo_LTK
-                {
-                    get { return _secInfo_LTK; }
-                    set { _secInfo_LTK = value; }
-                }
-
-                private UInt16 _secInfo_DIV = 0x1111;
-                private const string _secInfo_DIV_default = "0x1111";
-                [Description("secInfo_DIV (2 Bytes) - Diversifier")]
-                [DefaultValueAttribute(typeof(UInt16), _secInfo_DIV_default)]
-                public UInt16 secInfo_DIV
-                {
-                    get { return _secInfo_DIV; }
-                    set { _secInfo_DIV = value; }
-                }
-
-                public const Byte secInfo_RANDSize = 8;
-                private string _secInfo_RAND = "11:22:33:44:55:66:77:88";
-                [Description("secInfo_RAND (8 Bytes) - LTK Random pairing")]
-                [DefaultValueAttribute("11:22:33:44:55:66:77:88")]
-                public string secInfo_RAND
-                {
-                    get { return _secInfo_RAND; }
-                    set { _secInfo_RAND = value; }
-                }
-
-                private Byte _secInfo_LTKSize = 16;
-                [Description("secInfo_LTKSize (1 Byte) - LTK Key Size in bytes")]
-                [DefaultValueAttribute((Byte)16)]
-                public Byte secInfo_LTKSize
-                {
-                    get { return _secInfo_LTKSize; }
-                    set { _secInfo_LTKSize = value; }
-                }
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
             }
-            #endregion // GAP_Bond
 
-            #region GAP_TerminateAuth
-            /***********************************************************/
-            public class GAP_TerminateAuth
+            private GAP_AddrType _addrType = GAP_AddrType.Public;
+            [Description("Addr Type (1 Byte) - Address type")]
+            [DefaultValueAttribute(GAP_AddrType.Public)]
+            public GAP_AddrType addrType
             {
-                public string cmdName = "GAP_TerminateAuth";
-                public Byte dataLength = 0x03;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_TerminateAuth;
-                [Description("GAP_TerminateAuth")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-
-                private UInt16 _connHandle = (UInt16)GAP_ConnHandle.Default;
-                private const string _connHandle_default = "0x0000";
-                [Description("Connection Handle (2 Bytes) - Handle of the connection")]
-                [DefaultValueAttribute(typeof(UInt16), _connHandle_default)]
-                public UInt16 connHandle
-                {
-                    get { return _connHandle; }
-                    set { _connHandle = value; }
-                }
-
-                private GAP_SMPFailureTypes _reason = GAP_SMPFailureTypes.SMP_PAIRING_FAILED_AUTH_REQ;
-                [Description("Reason (1 Byte) - Pairing Failed Message reason field.")]
-                [DefaultValueAttribute(GAP_SMPFailureTypes.SMP_PAIRING_FAILED_AUTH_REQ)]
-                public GAP_SMPFailureTypes reason
-                {
-                    get { return _reason; }
-                    set { _reason = value; }
-                }
+                get { return _addrType; }
+                set { _addrType = value; }
             }
-            #endregion // GAP_TerminateAuth
 
-            #region GAP_SetParam
-            /***********************************************************/
-            public class GAP_SetParam : HCISerializer
+            private string _addr = HCICmds.EmptyBDAStr;
+            [Description("Addr (6 Bytes) - BDA of the intended address")]
+            [DefaultValueAttribute(HCICmds.EmptyBDAStr)]
+            public string addr
             {
-                public GAP_SetParam() : base()
-                {
-                    dataLength = 0x03;  // fixed length data only
-                    opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_SetParam;
-                }
-                public string cmdName = "GAP_SetParam";
-                [Description("GAP_SetParam")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-
-                private GAP_ParamId _paramId = GAP_ParamId.TGAP_GEN_DISC_ADV_MIN;
-                [Description("Param Id (1 Byte) - GAP parameter ID")]
-                [DefaultValueAttribute(GAP_ParamId.TGAP_GEN_DISC_ADV_MIN)]
-                [Serialize(number = 1)]
-                public GAP_ParamId paramId
-                {
-                    get { return _paramId; }
-                    set { _paramId = value; }
-                }
-
-                private UInt16 _value = 0x0000;
-                private const string _value_default = "0x0000";
-                [Description("New Value (2 Bytes)")]
-                [DefaultValueAttribute(typeof(UInt16), _value_default)]
-                [Serialize(number = 2)]
-                public UInt16 value
-                {
-                    get { return _value; }
-                    set { _value = value; }
-                }
+                get { return _addr; }
+                set { _addr = value; }
             }
-            #endregion // GAP_SetParam
+        }
+        #endregion  // GAP_ConfigDeviceAddr
 
-            #region GAP_GetParam
-            /***********************************************************/
-            public class GAP_GetParam : HCISerializer
+        #region GAP_DeviceDiscoveryRequest
+        /***********************************************************/
+        public class GAP_DeviceDiscoveryRequest : HCISerializer
+        {
+            public GAP_DeviceDiscoveryRequest() : base()
             {
-                public GAP_GetParam() : base()
-                {
+                dataLength = 0x03;  // fixed length data only
+                opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_DeviceDiscoveryRequest;
+            }
+            public string cmdName = "GAP_DeviceDiscoveryRequest";
+            [Description("GAP_DeviceDiscoveryRequest")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+
+            private GAP_DiscoveryMode _mode = GAP_DiscoveryMode.All;
+            [Description("Mode (1 Byte) - Discovery Mode")]
+            [DefaultValueAttribute(GAP_DiscoveryMode.All)]
+            [Category("Mode")]
+            [Serialize(number = 1)]
+            public GAP_DiscoveryMode mode
+            {
+                get { return _mode; }
+                set { _mode = value; }
+            }
+
+            private GAP_EnableDisable _nameMode = GAP_EnableDisable.Enable;
+            [Description("Name Mode (1 Byte) - Name Mode Enable/Disable")]
+            [DefaultValueAttribute(GAP_EnableDisable.Enable)]
+            [Category("NameMode")]
+            [Serialize(number = 2)]
+            public GAP_EnableDisable nameMode
+            {
+                get { return _nameMode; }
+                set { _nameMode = value; }
+            }
+
+            private GAP_EnableDisable _whiteList = GAP_EnableDisable.Disable;
+            [Description("White List (1 byte) - White List Enable/Disable - Enabled to only allow advertisements from devices in the white list.")]
+            [DefaultValueAttribute(GAP_EnableDisable.Disable)]
+            [Category("White List")]
+            [Serialize(number = 3)]
+            public GAP_EnableDisable whiteList
+            {
+                get { return _whiteList; }
+                set { _whiteList = value; }
+            }
+        }
+        #endregion  // GAP_DeviceDiscoveryRequest
+
+        #region GAP_DeviceDiscoveryCancel
+        /***********************************************************/
+        public class GAP_DeviceDiscoveryCancel : HCISerializer
+        {
+            public GAP_DeviceDiscoveryCancel() : base()
+            {
+                dataLength = 0x00;  // fixed length data only
+                opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_DeviceDiscoveryCancel;
+            }
+            public string cmdName = "GAP_DeviceDiscoveryCancel";
+
+            [Description("GAP_DeviceDiscoveryCancel - Cancel the current device discovery")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+        }
+        #endregion  // GAP_DeviceDiscoveryCancel
+
+        #region GAP_MakeDiscoverable
+        /***********************************************************/
+        public class GAP_MakeDiscoverable
+        {
+            public string cmdName = "GAP_MakeDiscoverable";
+            public Byte dataLength = 0x09;  // fixed length data only
+            public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_MakeDiscoverable;
+            [Description("GAP_MakeDiscoverable")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+            private GAP_EventType _eventType = GAP_EventType.GAP_EVENT_CONN_UNDIRECT_AD;
+            [Description("Event Type (1 Byte) - Advertising event type")]
+            [DefaultValueAttribute(GAP_EventType.GAP_EVENT_CONN_UNDIRECT_AD)]
+            public GAP_EventType eventType
+            {
+                get { return _eventType; }
+                set { _eventType = value; }
+            }
+
+            private GAP_AddrType _initiatorAddrType = GAP_AddrType.Public;
+            [Description("Initiator Address Type (1 Byte) - Address type")]
+            [DefaultValueAttribute(GAP_AddrType.Public)]
+            public GAP_AddrType initiatorAddrType
+            {
+                get { return _initiatorAddrType; }
+                set { _initiatorAddrType = value; }
+            }
+
+            public const Byte initiatorAddrSize = 6;
+            private string _initiatorAddr = HCICmds.EmptyBDAStr;
+            [Description("Initiator's Address (6 Bytes) - BDA of the Initiator")]
+            [DefaultValueAttribute(HCICmds.EmptyBDAStr)]
+            public string initiatorAddr
+            {
+                get { return _initiatorAddr; }
+                set { _initiatorAddr = value; }
+            }
+
+            // this is a bit field
+            private Byte _channelMap = 0x07;
+            [Description("Channel Map (1 Byte) - Bit mask - 0x07 all channels")]
+            [DefaultValueAttribute((Byte)0x07)]
+            public Byte channelMap
+            {
+                get { return _channelMap; }
+                set { _channelMap = value; }
+            }
+
+            private GAP_FilterPolicy _filterPolicy = GAP_FilterPolicy.GAP_FILTER_POLICY_ALL;
+            [Description("Filter Policy (1 Byte) - Filer Policy. Ignored when directed advertising is used.")]
+            [DefaultValueAttribute(GAP_FilterPolicy.GAP_FILTER_POLICY_ALL)]
+            public GAP_FilterPolicy filterPolicy
+            {
+                get { return _filterPolicy; }
+                set { _filterPolicy = value; }
+            }
+        }
+        #endregion  // GAP_MakeDiscoverable
+
+        #region GAP_UpdateAdvertisingData
+        /***********************************************************/
+        public class GAP_UpdateAdvertisingData
+        {
+            public string cmdName = "GAP_UpdateAdvertisingData";
+            public Byte dataLength = 0x02;  // fixed length data only
+            public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_UpdateAdvertisingData;
+            [Description("GAP_UpdateAdvertisingData")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+
+            private GAP_AvertAdType _adType = GAP_AvertAdType.GAPADVERT_SCAN_RSP_DATA;
+            [Description("Ad Type (1 Byte)")]
+            [DefaultValueAttribute(GAP_AvertAdType.GAPADVERT_SCAN_RSP_DATA)]
+            public GAP_AvertAdType adType
+            {
+                get { return _adType; }
+                set { _adType = value; }
+            }
+
+            private Byte _dataLen = 0x00;
+            [Description("DataLen (1 Byte) - The length of the data (0 - 31)")]
+            [DefaultValueAttribute((Byte)0x00)]
+            public Byte dataLen
+            {
+                get { return _dataLen; }
+                set { _dataLen = value; }
+            }
+
+            private string _advertData = "02:01:06";
+            [Description("Advert Data (x Bytes) - Raw Advertising Data")]
+            [DefaultValueAttribute("02:01:06")]
+            public string advertData
+            {
+                get { return _advertData; }
+                set { _advertData = value; }
+            }
+        }
+        #endregion  // GAP_UpdateAdvertisingData
+
+        #region GAP_EndDiscoverable
+        /***********************************************************/
+        public class GAP_EndDiscoverable
+        {
+            public string cmdName = "GAP_EndDiscoverable";
+            public Byte dataLength = 0x00;  // fixed length data only
+            public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_EndDiscoverable;
+            [Description("GAP_EndDiscoverable")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+        }
+        #endregion  // GAP_UpdateAdvertisingData
+
+        #region GAP_EstablishLinkRequest
+        /***********************************************************/
+        public class GAP_EstablishLinkRequest : HCISerializer
+        {
+            public GAP_EstablishLinkRequest() : base()
+            {
+                dataLength = 0x09;  // fixed length data only
+                opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_EstablishLinkRequest;
+            }
+            public string cmdName = "GAP_EstablishLinkRequest";
+
+            [Description("GAP_EstablishLinkRequest")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+
+            private GAP_EnableDisable _highDutyCycle = GAP_EnableDisable.Disable;
+            [Description("High Duty Cycle (1 Byte) - A Central Device may use high duty cycle scan parameters in order to achieve low latency connection time with a Peripheral device using Directed Link Establishment.")]
+            [DefaultValueAttribute(GAP_EnableDisable.Disable)]
+            [Serialize(number = 1)]
+            public GAP_EnableDisable highDutyCycle
+            {
+                get { return _highDutyCycle; }
+                set { _highDutyCycle = value; }
+            }
+
+            private GAP_EnableDisable _whiteList = GAP_EnableDisable.Disable;
+            [Description("White List (1 Byte)")]
+            [DefaultValueAttribute(GAP_EnableDisable.Disable)]
+            [Serialize(number = 2)]
+            public GAP_EnableDisable whiteList
+            {
+                get { return _whiteList; }
+                set { _whiteList = value; }
+            }
+
+            private GAP_AddrType _addrTypePeer = GAP_AddrType.Public;
+            [Description("Addr Type (1 Byte) - Address type")]
+            [DefaultValueAttribute(GAP_AddrType.Public)]
+            [Serialize(number = 3)]
+            public GAP_AddrType addrTypePeer
+            {
+                get { return _addrTypePeer; }
+                set { _addrTypePeer = value; }
+            }
+
+            private byte[] _peerAddr = HCICmds.EmptyBDA;
+            [Description("Peer's Address (6 Bytes) - BDA of the peer")]
+            [DefaultValueAttribute(HCICmds.EmptyBDAStr)]
+            [Serialize(number = 4)]
+            public byte[] peerAddr
+            {
+                get { return _peerAddr; }
+                set { _peerAddr = value; }
+            }
+        }
+        #endregion  // GAP_EstablishLinkRequest
+
+        #region GAP_TerminateLinkRequest
+        /***********************************************************/
+        public class GAP_TerminateLinkRequest : HCISerializer
+        {
+            public GAP_TerminateLinkRequest() : base()
+            {
+                dataLength = 0x02;  // fixed length data only
+                opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_TerminateLinkRequest;
+            }
+            public string cmdName = "GAP_TerminateLinkRequest";
+            [Description("GAP_TerminateLinkRequest")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+
+            private UInt16 _connHandle = (UInt16)GAP_ConnHandle.Default;
+            private const string _connHandle_default = "0x0000";
+            [Description("Connection Handle (2 Bytes) - Handle of the connection")]
+            [DefaultValueAttribute(typeof(UInt16), _connHandle_default)]
+            [Serialize(number = 1)]
+            public UInt16 connHandle
+            {
+                get { return _connHandle; }
+                set { _connHandle = value; }
+            }
+        }
+        #endregion  // GAP_TerminateLinkRequest
+
+        #region GAP_Authenticate
+        /***********************************************************/
+        public class GAP_Authenticate
+        {
+            public string cmdName = "GAP_Authenticate";
+            public Byte dataLength = 0x1D;  // fixed length data only
+            public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_Authenticate;
+            [Description("GAP_Authenticate")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+
+            private UInt16 _connHandle = (UInt16)GAP_ConnHandle.Default;
+            private const string _connHandle_default = "0x0000";
+            [Description("Connection Handle (2 Bytes) - Handle of the connection")]
+            [DefaultValueAttribute(typeof(UInt16), _connHandle_default)]
+            public UInt16 connHandle
+            {
+                get { return _connHandle; }
+                set { _connHandle = value; }
+            }
+
+            private GAP_IOCaps _secReq_ioCaps = GAP_IOCaps.NoInputNoOutput;
+            [Description("IOCaps (1 Byte) - Defines the values which are used when exchanging IO capabilities")]
+            [DefaultValueAttribute(GAP_IOCaps.NoInputNoOutput)]
+            public GAP_IOCaps secReq_ioCaps
+            {
+                get { return _secReq_ioCaps; }
+                set { _secReq_ioCaps = value; }
+            }
+
+            private GAP_TrueFalse _secReq_oobAvailable = GAP_TrueFalse.False;
+            [Description("OOB Available (1 Byte) - Enable if Out-of-band key available")]
+            [DefaultValueAttribute(GAP_TrueFalse.False)]
+            public GAP_TrueFalse secReq_oobAvailable
+            {
+                get { return _secReq_oobAvailable; }
+                set { _secReq_oobAvailable = value; }
+            }
+
+            public const Byte secReq_oobSize = 16;
+            private string _secReq_oob = "4d:9f:88:5a:6e:03:12:fe:00:00:00:00:00:00:00:00";
+            [Description("OOB Key (16 Bytes) The OOB key value")]
+            [DefaultValueAttribute("4d:9f:88:5a:6e:03:12:fe:00:00:00:00:00:00:00:00")]
+            public string secReq_oob
+            {
+                get { return _secReq_oob; }
+                set { _secReq_oob = value; }
+            }
+
+            // this is a bit field
+            private Byte _secReq_authReq = (Byte)GAP_AuthReq.Bonding;
+            [Description("Auth Req (1 Byte) - A bit field that indicates the requested security properties for STK and GAP bonding information.")]
+            [DefaultValueAttribute((Byte)GAP_AuthReq.Bonding)]
+            public Byte secReq_authReq
+            {
+                get { return _secReq_authReq; }
+                set { _secReq_authReq = value; }
+            }
+
+            private Byte _secReq_maxEncKeySize = 16;
+            [Description("Max Enc Key Size (16 Bytes) - This value defines the maximum encryption key size in octets\nthat the device can support.  Range: 7 to 16.")]
+            [DefaultValueAttribute((Byte)16)]
+            public Byte secReq_maxEncKeySize
+            {
+                get { return _secReq_maxEncKeySize; }
+                set { _secReq_maxEncKeySize = value; }
+            }
+
+            // this is a bit field
+            private Byte _secReq_keyDist = 63;
+            [Description("Key Distribution (1 Byte) - The Key Distribution field indicates which keys will be distributed.")]
+            [DefaultValueAttribute((Byte)63)]
+            public Byte secReq_keyDist
+            {
+                get { return _secReq_keyDist; }
+                set { _secReq_keyDist = value; }
+            }
+
+            private GAP_EnableDisable _pairReq_Enable = GAP_EnableDisable.Disable;
+            [Description("Pairing Request (1 Byte) - Enable - if Pairing Request has already been received\nand to respond with a Pairing Response.\n This should only be used in a Peripheral device.")]
+            [DefaultValueAttribute(GAP_EnableDisable.Disable)]
+            public GAP_EnableDisable pairReq_Enable
+            {
+                get { return _pairReq_Enable; }
+                set { _pairReq_Enable = value; }
+            }
+
+            private GAP_IOCaps _pairReq_ioCaps = GAP_IOCaps.NoInputNoOutput;
+            [Description("IO Capabilities (1 Byte) - Defines the values which are used when exchanging IO capabilities")]
+            [DefaultValueAttribute(GAP_IOCaps.NoInputNoOutput)]
+            public GAP_IOCaps pairReq_ioCaps
+            {
+                get { return _pairReq_ioCaps; }
+                set { _pairReq_ioCaps = value; }
+            }
+
+            private GAP_EnableDisable _pairReq_oobDataFlag = GAP_EnableDisable.Disable;
+            [Description("OOB data Flag (1 Byte) - Enable if Out-of-band key available")]
+            [DefaultValueAttribute(GAP_EnableDisable.Disable)]
+            public GAP_EnableDisable pairReq_oobDataFlag
+            {
+                get { return _pairReq_oobDataFlag; }
+                set { _pairReq_oobDataFlag = value; }
+            }
+
+            private Byte _pairReq_authReq = 0x01;
+            [Description("Auth Req (1 Byte) - Bit field that indicates the requested security properties\nfor STK and GAP bonding information.")]
+            [DefaultValueAttribute((Byte)0x01)]
+            public Byte pairReq_authReq
+            {
+                get { return _pairReq_authReq; }
+                set { _pairReq_authReq = value; }
+            }
+
+            private Byte _pairReq_maxEncKeySize = 16;
+            [Description("Max Enc Key Size (1 Byte) - This value defines the maximun encryption key size in octects\nthat the device can support.")]
+            [DefaultValueAttribute((Byte)16)]
+            public Byte pairReq_maxEncKeySize
+            {
+                get { return _pairReq_maxEncKeySize; }
+                set { _pairReq_maxEncKeySize = value; }
+            }
+
+            // this is a bit field
+            private Byte _pairReq_keyDist = 63;
+            [Description("Key Dist (1 Byte) - The Key Distribution field indicates which keys will be distributed.")]
+            [DefaultValueAttribute((Byte)63)]
+            public Byte pairReq_keyDist
+            {
+                get { return _pairReq_keyDist; }
+                set { _pairReq_keyDist = value; }
+            }
+        }
+        #endregion  // GAP_Authenticate
+
+        #region GAP_PasskeyUpdate
+        /***********************************************************/
+        public class GAP_PasskeyUpdate
+        {
+            public string cmdName = "GAP_PasskeyUpdate";
+            public Byte dataLength = 0x08;  // fixed length data only
+            public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_PasskeyUpdate;
+            [Description("GAP_PasskeyUpdate")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+
+            private UInt16 _connHandle = (UInt16)GAP_ConnHandle.Default;
+            private const string _connHandle_default = "0x0000";
+            [Description("Connection Handle (2 Bytes) - Handle of the connection")]
+            [DefaultValueAttribute(typeof(UInt16), _connHandle_default)]
+            public UInt16 connHandle
+            {
+                get { return _connHandle; }
+                set { _connHandle = value; }
+            }
+
+            public const Byte passKeySize = 6;
+            private string _passKey = "000000";
+            [Description("Pairing Passkey (6 Bytes) - string of numbers 0-9. '019655' is a value of 0x4CC7\n")]
+            [DefaultValueAttribute("000000")]
+            public string passKey
+            {
+                get { return _passKey; }
+                set { _passKey = value; }
+            }
+        }
+        #endregion // GAP_PasskeyUpdate
+
+        #region GAP_SlaveSecurityRequest
+        /***********************************************************/
+        public class GAP_SlaveSecurityRequest
+        {
+            public string cmdName = "GAP_SlaveSecurityRequest";
+            public Byte dataLength = 0x03;  // fixed length data only
+            public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_SlaveSecurityRequest;
+            [Description("GAP_SlaveSecurityRequest")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+
+            private UInt16 _connHandle = (UInt16)GAP_ConnHandle.Default;
+            private const string _connHandle_default = "0x0000";
+            [Description("Connection Handle (2 Bytes) - Handle of the connection")]
+            [DefaultValueAttribute(typeof(UInt16), _connHandle_default)]
+            public UInt16 connHandle
+            {
+                get { return _connHandle; }
+                set { _connHandle = value; }
+            }
+
+            // this is a bit field
+            private Byte _authReq = (Byte)GAP_AuthReq.Bonding;
+            [Description("AuthReq (1 Byte) - A bit field that indicates the requested security properties bonding information.")]
+            [DefaultValueAttribute((Byte)GAP_AuthReq.Bonding)]
+            public Byte authReq
+            {
+                get { return _authReq; }
+                set { _authReq = value; }
+            }
+        }
+        #endregion // GAP_SlaveSecurityRequest
+
+        #region GAP_Signable
+        /***********************************************************/
+        public class GAP_Signable
+        {
+            public string cmdName = "GAP_Signable";
+            public Byte dataLength = 0x07;  // fixed length data only
+            public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_Signable;
+            [Description("GAP_Signable")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+
+            private UInt16 _connHandle = (UInt16)GAP_ConnHandle.Default;
+            private const string _connHandle_default = "0x0000";
+            [Description("Connection Handle (2 Bytes) - Handle of the connection")]
+            [DefaultValueAttribute(typeof(UInt16), _connHandle_default)]
+            public UInt16 connHandle
+            {
+                get { return _connHandle; }
+                set { _connHandle = value; }
+            }
+
+            private GAP_AuthenticatedCsrk _authenticated = GAP_AuthenticatedCsrk.GAP_CSRK_NOT_AUTHENTICATED;
+            [Description("Authenticated (1 Byte) - Is the signing information authenticated.")]
+            [DefaultValueAttribute(GAP_AuthenticatedCsrk.GAP_CSRK_NOT_AUTHENTICATED)]
+            public GAP_AuthenticatedCsrk authenticated
+            {
+                get { return _authenticated; }
+                set { _authenticated = value; }
+            }
+
+            public const Byte csrkSize = 16;
+            private string _csrk = HCICmds.Empty16BytesStr;
+            [Description("CSRK (16 Bytes) - Connection Signature Resolving Key for the connected device")]
+            [DefaultValueAttribute(HCICmds.Empty16BytesStr)]
+            public string csrk
+            {
+                get { return _csrk; }
+                set { _csrk = value; }
+            }
+
+            private UInt32 _signCounter = 0;
+            private const string _signCounter_default = "0";
+            [Description("Signature Counter (4 Bytes) - Sign Counter for the connected device")]
+            [DefaultValueAttribute(typeof(UInt32), _signCounter_default)]
+            public UInt32 signCounter
+            {
+                get { return _signCounter; }
+                set { _signCounter = value; }
+            }
+        }
+        #endregion // GAP_Signable
+
+        #region GAP_Bond
+        /***********************************************************/
+        public class GAP_Bond
+        {
+            public string cmdName = "GAP_Bond";
+            public Byte dataLength = 0x06;  // fixed length data only
+            public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_Bond;
+            [Description("GAP_Bond")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+
+            private UInt16 _connHandle = (UInt16)GAP_ConnHandle.Default;
+            private const string _connHandle_default = "0x0000";
+            [Description("Connection Handle (2 Bytes) - Handle of the connection")]
+            [DefaultValueAttribute(typeof(UInt16), _connHandle_default)]
+            public UInt16 connHandle
+            {
+                get { return _connHandle; }
+                set { _connHandle = value; }
+            }
+
+            private GAP_YesNo _authenticated = GAP_YesNo.No;
+            [Description("Authenticated (1 Byte) - Yes if the bond was authenticated")]
+            [DefaultValueAttribute(GAP_YesNo.No)]
+            public GAP_YesNo authenticated
+            {
+                get { return _authenticated; }
+                set { _authenticated = value; }
+            }
+
+            public const Byte secInfo_LTKLength = 16;
+            private string _secInfo_LTK = "4d:9f:88:5a:6e:03:12:fe:00:00:00:00:00:00:00:00";
+            [Description("secInfo_LTK (16 Bytes) - Long Term Key")]
+            [DefaultValueAttribute("4d:9f:88:5a:6e:03:12:fe:00:00:00:00:00:00:00:00")]
+            public string secInfo_LTK
+            {
+                get { return _secInfo_LTK; }
+                set { _secInfo_LTK = value; }
+            }
+
+            private UInt16 _secInfo_DIV = 0x1111;
+            private const string _secInfo_DIV_default = "0x1111";
+            [Description("secInfo_DIV (2 Bytes) - Diversifier")]
+            [DefaultValueAttribute(typeof(UInt16), _secInfo_DIV_default)]
+            public UInt16 secInfo_DIV
+            {
+                get { return _secInfo_DIV; }
+                set { _secInfo_DIV = value; }
+            }
+
+            public const Byte secInfo_RANDSize = 8;
+            private string _secInfo_RAND = "11:22:33:44:55:66:77:88";
+            [Description("secInfo_RAND (8 Bytes) - LTK Random pairing")]
+            [DefaultValueAttribute("11:22:33:44:55:66:77:88")]
+            public string secInfo_RAND
+            {
+                get { return _secInfo_RAND; }
+                set { _secInfo_RAND = value; }
+            }
+
+            private Byte _secInfo_LTKSize = 16;
+            [Description("secInfo_LTKSize (1 Byte) - LTK Key Size in bytes")]
+            [DefaultValueAttribute((Byte)16)]
+            public Byte secInfo_LTKSize
+            {
+                get { return _secInfo_LTKSize; }
+                set { _secInfo_LTKSize = value; }
+            }
+        }
+        #endregion // GAP_Bond
+
+        #region GAP_TerminateAuth
+        /***********************************************************/
+        public class GAP_TerminateAuth
+        {
+            public string cmdName = "GAP_TerminateAuth";
+            public Byte dataLength = 0x03;  // fixed length data only
+            public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_TerminateAuth;
+            [Description("GAP_TerminateAuth")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+
+            private UInt16 _connHandle = (UInt16)GAP_ConnHandle.Default;
+            private const string _connHandle_default = "0x0000";
+            [Description("Connection Handle (2 Bytes) - Handle of the connection")]
+            [DefaultValueAttribute(typeof(UInt16), _connHandle_default)]
+            public UInt16 connHandle
+            {
+                get { return _connHandle; }
+                set { _connHandle = value; }
+            }
+
+            private GAP_SMPFailureTypes _reason = GAP_SMPFailureTypes.SMP_PAIRING_FAILED_AUTH_REQ;
+            [Description("Reason (1 Byte) - Pairing Failed Message reason field.")]
+            [DefaultValueAttribute(GAP_SMPFailureTypes.SMP_PAIRING_FAILED_AUTH_REQ)]
+            public GAP_SMPFailureTypes reason
+            {
+                get { return _reason; }
+                set { _reason = value; }
+            }
+        }
+        #endregion // GAP_TerminateAuth
+
+        #region GAP_SetParam
+        /***********************************************************/
+        public class GAP_SetParam : HCISerializer
+        {
+            public GAP_SetParam() : base()
+            {
+                dataLength = 0x03;  // fixed length data only
+                opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_SetParam;
+            }
+            public string cmdName = "GAP_SetParam";
+            [Description("GAP_SetParam")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+
+            private GAP_ParamId _paramId = GAP_ParamId.TGAP_GEN_DISC_ADV_MIN;
+            [Description("Param Id (1 Byte) - GAP parameter ID")]
+            [DefaultValueAttribute(GAP_ParamId.TGAP_GEN_DISC_ADV_MIN)]
+            [Serialize(number = 1)]
+            public GAP_ParamId paramId
+            {
+                get { return _paramId; }
+                set { _paramId = value; }
+            }
+
+            private UInt16 _value = 0x0000;
+            private const string _value_default = "0x0000";
+            [Description("New Value (2 Bytes)")]
+            [DefaultValueAttribute(typeof(UInt16), _value_default)]
+            [Serialize(number = 2)]
+            public UInt16 value
+            {
+                get { return _value; }
+                set { _value = value; }
+            }
+        }
+        #endregion // GAP_SetParam
+
+        #region GAP_GetParam
+        /***********************************************************/
+        public class GAP_GetParam : HCISerializer
+        {
+            public GAP_GetParam() : base()
+            {
                 dataLength = 0x01;  // fixed length data only
                 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_GetParam;
             }
             public string cmdName = "GAP_GetParam";
-                [Description("GAP_GetParam")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-
-                private GAP_ParamId _paramId = GAP_ParamId.TGAP_GEN_DISC_ADV_MIN;
-                [Description("Param ID (1 Byte) - GAP parameter ID")]
-                [DefaultValueAttribute(GAP_ParamId.TGAP_GEN_DISC_ADV_MIN)]
-                [Category("ParamID")]
-                [Serialize(number = 1)]
-                public GAP_ParamId paramId
-                {
-                    get { return _paramId; }
-                    set { _paramId = value; }
-                }
-            }
-            #endregion  // GAP_GetParam
-
-            #region GAP_ResolvePrivateAddr
-            /***********************************************************/
-            public class GAP_ResolvePrivateAddr
+            [Description("GAP_GetParam")]
+            public string opCode
             {
-                public string cmdName = "GAP_ResolvePrivateAddr";
-                public Byte dataLength = 0x00;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_ResolvePrivateAddr;
-                [Description("GAP_ResolvePrivateAddr")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-
-                public const Byte irkSize = 16;
-                private string _irk = HCICmds.Empty16BytesStr;
-                [Description("IRK (16 Bytes) - Identity Resolving Key of the device your looking for")]
-                [DefaultValueAttribute(HCICmds.Empty16BytesStr)]
-                public string irk
-                {
-                    get { return _irk; }
-                    set { _irk = value; }
-                }
-
-                public const Byte addrSize = 6;
-                private string _addr = HCICmds.EmptyBDAStr;
-                [Description("Address (6 Bytes) - Random Private address to resolve")]
-                [DefaultValueAttribute(HCICmds.EmptyBDAStr)]
-                public string addr
-                {
-                    get { return _addr; }
-                    set { _addr = value; }
-                }
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
             }
-            #endregion  // GAP_ResolvePrivateAddr
 
-            #region GAP_SetAdvToken
-            /***********************************************************/
-            public class GAP_SetAdvToken
+            private GAP_ParamId _paramId = GAP_ParamId.TGAP_GEN_DISC_ADV_MIN;
+            [Description("Param ID (1 Byte) - GAP parameter ID")]
+            [DefaultValueAttribute(GAP_ParamId.TGAP_GEN_DISC_ADV_MIN)]
+            [Category("ParamID")]
+            [Serialize(number = 1)]
+            public GAP_ParamId paramId
             {
-                public string cmdName = "GAP_SetAdvToken";
-                public Byte dataLength = 0x02;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_SetAdvToken;
-                [Description("GAP_SetAdvToken")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-
-                private GAP_AdTypes _adType = GAP_AdTypes.GAP_ADTYPE_FLAGS;
-                [Description("Ad Type (1 Byte) - Advertisement Data Type")]
-                [DefaultValueAttribute(GAP_AdTypes.GAP_ADTYPE_FLAGS)]
-                public GAP_AdTypes adType
-                {
-                    get { return _adType; }
-                    set { _adType = value; }
-                }
-
-                private Byte _advDataLen = 0;
-                [Description("Adv Data Len (1 Byte) - Length (in octets) of advData")]
-                [DefaultValueAttribute((Byte)0)]
-                public Byte advDataLen
-                {
-                    get { return _advDataLen; }
-                    set { _advDataLen = value; }
-                }
-
-                private string _advData = HCICmds.Empty2BytesStr;
-                [Description("Adv Data (x Bytes) - Advertisement token data (over-the-air format).")]
-                [DefaultValueAttribute(HCICmds.Empty2BytesStr)]
-                public string advData
-                {
-                    get { return _advData; }
-                    set { _advData = value; }
-                }
+                get { return _paramId; }
+                set { _paramId = value; }
             }
-            #endregion  // GAP_SetAdvToken
-
-            #region GAP_RemoveAdvToken
-            /***********************************************************/
-            public class GAP_RemoveAdvToken
-            {
-                public string cmdName = "GAP_RemoveAdvToken";
-                public Byte dataLength = 0x01;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_RemoveAdvToken;
-                [Description("GAP_RemoveAdvToken")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-
-                private GAP_AdTypes _adType = GAP_AdTypes.GAP_ADTYPE_FLAGS;
-                [Description("Ad Type (1 Byte) - Advertisement Data Type")]
-                [DefaultValueAttribute(GAP_AdTypes.GAP_ADTYPE_FLAGS)]
-                public GAP_AdTypes adType
-                {
-                    get { return _adType; }
-                    set { _adType = value; }
-                }
-            }
-            #endregion  // GAP_RemoveAdvToken
-
-            #region GAP_UpdateAdvTokens
-            /***********************************************************/
-            public class GAP_UpdateAdvTokens
-            {
-                public string cmdName = "GAP_UpdateAdvTokens";
-                public Byte dataLength = 0x00;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_UpdateAdvTokens;
-                [Description("GAP_UpdateAdvTokens")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-            }
-            #endregion  // GAP_UpdateAdvTokens
-
-            #region GAP_BondSetParam
-            /***********************************************************/
-            public class GAP_BondSetParam
-            {
-                public string cmdName = "GAP_BondSetParam";
-                public Byte dataLength = 0x03;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_BondSetParam;
-                [Description("GAP_BondSetParam")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-
-                private GAP_BondParamId _paramId = GAP_BondParamId.GAPBOND_PAIRING_MODE;
-                [Description("Param ID (1 Byte) - GAP Bond Parameter ID")]
-                [DefaultValueAttribute(GAP_BondParamId.GAPBOND_PAIRING_MODE)]
-                public GAP_BondParamId paramId
-                {
-                    get { return _paramId; }
-                    set { _paramId = value; }
-                }
-
-                private Byte _length = 0x00;
-                [Description("Param Length (1 Byte) - Length of the parameter")]
-                [DefaultValueAttribute((Byte)0x00)]
-                public Byte length
-                {
-                    get { return _length; }
-                    set { _length = value; }
-                }
-
-                private string _value = "00";
-                [Description("ParamData (x Bytes) - Param Data Field.  Ex. '02:FF' for 2 bytes")]
-                [DefaultValueAttribute("00")]
-                public string value
-                {
-                    get { return _value; }
-                    set { _value = value; }
-                }
-            }
-            #endregion // GAP_BondSetParam
-
-            #region GAP_BondGetParam
-            /***********************************************************/
-            public class GAP_BondGetParam
-            {
-                public string cmdName = "GAP_BondGetParam";
-                public Byte dataLength = 0x02;  // fixed length data only
-                public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_BondGetParam;
-                [Description("GAP_BondGetParam")]
-                public string opCode
-                {
-                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
-                }
-
-                private GAP_BondParamId _paramId = GAP_BondParamId.GAPBOND_PAIRING_MODE;
-                [Description("Param Id (1 Byte) GAP Bond Parameter ID")]
-                [DefaultValueAttribute(GAP_BondParamId.GAPBOND_PAIRING_MODE)]
-                public GAP_BondParamId paramId
-                {
-                    get { return _paramId; }
-                    set { _paramId = value; }
-                }
-            }
-            #endregion  // GAP_BondGetParam
         }
+        #endregion  // GAP_GetParam
+
+        #region GAP_ResolvePrivateAddr
+        /***********************************************************/
+        public class GAP_ResolvePrivateAddr
+        {
+            public string cmdName = "GAP_ResolvePrivateAddr";
+            public Byte dataLength = 0x00;  // fixed length data only
+            public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_ResolvePrivateAddr;
+            [Description("GAP_ResolvePrivateAddr")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+
+            public const Byte irkSize = 16;
+            private string _irk = HCICmds.Empty16BytesStr;
+            [Description("IRK (16 Bytes) - Identity Resolving Key of the device your looking for")]
+            [DefaultValueAttribute(HCICmds.Empty16BytesStr)]
+            public string irk
+            {
+                get { return _irk; }
+                set { _irk = value; }
+            }
+
+            public const Byte addrSize = 6;
+            private string _addr = HCICmds.EmptyBDAStr;
+            [Description("Address (6 Bytes) - Random Private address to resolve")]
+            [DefaultValueAttribute(HCICmds.EmptyBDAStr)]
+            public string addr
+            {
+                get { return _addr; }
+                set { _addr = value; }
+            }
+        }
+        #endregion  // GAP_ResolvePrivateAddr
+
+        #region GAP_SetAdvToken
+        /***********************************************************/
+        public class GAP_SetAdvToken
+        {
+            public string cmdName = "GAP_SetAdvToken";
+            public Byte dataLength = 0x02;  // fixed length data only
+            public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_SetAdvToken;
+            [Description("GAP_SetAdvToken")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+
+            private GAP_AdTypes _adType = GAP_AdTypes.GAP_ADTYPE_FLAGS;
+            [Description("Ad Type (1 Byte) - Advertisement Data Type")]
+            [DefaultValueAttribute(GAP_AdTypes.GAP_ADTYPE_FLAGS)]
+            public GAP_AdTypes adType
+            {
+                get { return _adType; }
+                set { _adType = value; }
+            }
+
+            private Byte _advDataLen = 0;
+            [Description("Adv Data Len (1 Byte) - Length (in octets) of advData")]
+            [DefaultValueAttribute((Byte)0)]
+            public Byte advDataLen
+            {
+                get { return _advDataLen; }
+                set { _advDataLen = value; }
+            }
+
+            private string _advData = HCICmds.Empty2BytesStr;
+            [Description("Adv Data (x Bytes) - Advertisement token data (over-the-air format).")]
+            [DefaultValueAttribute(HCICmds.Empty2BytesStr)]
+            public string advData
+            {
+                get { return _advData; }
+                set { _advData = value; }
+            }
+        }
+        #endregion  // GAP_SetAdvToken
+
+        #region GAP_RemoveAdvToken
+        /***********************************************************/
+        public class GAP_RemoveAdvToken
+        {
+            public string cmdName = "GAP_RemoveAdvToken";
+            public Byte dataLength = 0x01;  // fixed length data only
+            public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_RemoveAdvToken;
+            [Description("GAP_RemoveAdvToken")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+
+            private GAP_AdTypes _adType = GAP_AdTypes.GAP_ADTYPE_FLAGS;
+            [Description("Ad Type (1 Byte) - Advertisement Data Type")]
+            [DefaultValueAttribute(GAP_AdTypes.GAP_ADTYPE_FLAGS)]
+            public GAP_AdTypes adType
+            {
+                get { return _adType; }
+                set { _adType = value; }
+            }
+        }
+        #endregion  // GAP_RemoveAdvToken
+
+        #region GAP_UpdateAdvTokens
+        /***********************************************************/
+        public class GAP_UpdateAdvTokens
+        {
+            public string cmdName = "GAP_UpdateAdvTokens";
+            public Byte dataLength = 0x00;  // fixed length data only
+            public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_UpdateAdvTokens;
+            [Description("GAP_UpdateAdvTokens")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+        }
+        #endregion  // GAP_UpdateAdvTokens
+
+        #region GAP_BondSetParam
+        /***********************************************************/
+        public class GAP_BondSetParam
+        {
+            public string cmdName = "GAP_BondSetParam";
+            public Byte dataLength = 0x03;  // fixed length data only
+            public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_BondSetParam;
+            [Description("GAP_BondSetParam")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+
+            private GAP_BondParamId _paramId = GAP_BondParamId.GAPBOND_PAIRING_MODE;
+            [Description("Param ID (1 Byte) - GAP Bond Parameter ID")]
+            [DefaultValueAttribute(GAP_BondParamId.GAPBOND_PAIRING_MODE)]
+            public GAP_BondParamId paramId
+            {
+                get { return _paramId; }
+                set { _paramId = value; }
+            }
+
+            private Byte _length = 0x00;
+            [Description("Param Length (1 Byte) - Length of the parameter")]
+            [DefaultValueAttribute((Byte)0x00)]
+            public Byte length
+            {
+                get { return _length; }
+                set { _length = value; }
+            }
+
+            private string _value = "00";
+            [Description("ParamData (x Bytes) - Param Data Field.  Ex. '02:FF' for 2 bytes")]
+            [DefaultValueAttribute("00")]
+            public string value
+            {
+                get { return _value; }
+                set { _value = value; }
+            }
+        }
+        #endregion // GAP_BondSetParam
+
+        #region GAP_BondGetParam
+        /***********************************************************/
+        public class GAP_BondGetParam
+        {
+            public string cmdName = "GAP_BondGetParam";
+            public Byte dataLength = 0x02;  // fixed length data only
+            public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_BondGetParam;
+            [Description("GAP_BondGetParam")]
+            public string opCode
+            {
+                get { return ZeroXStr + opCodeValue.ToString("X4"); }
+            }
+
+            private GAP_BondParamId _paramId = GAP_BondParamId.GAPBOND_PAIRING_MODE;
+            [Description("Param Id (1 Byte) GAP Bond Parameter ID")]
+            [DefaultValueAttribute(GAP_BondParamId.GAPBOND_PAIRING_MODE)]
+            public GAP_BondParamId paramId
+            {
+                get { return _paramId; }
+                set { _paramId = value; }
+            }
+        }
+        #endregion  // GAP_BondGetParam
+
         #endregion // GAP Cmds
 
         #region Util Commands
@@ -4282,4 +4309,6 @@ namespace tiota
         }
         #endregion // GAP Events
     }
+
+
 }

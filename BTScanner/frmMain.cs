@@ -9,8 +9,8 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Windows.Forms;
-using static tiota.HCISerializer.HCICmds;
-using static tiota.HCISerializer.HCICmds.GAPCmds;
+using static tiota.HCICmds;
+using static tiota.HCICmds.GAPCmds;
 using static tiota.SoftwareUpgrade;
 
 namespace tiota
