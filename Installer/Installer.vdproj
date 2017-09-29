@@ -16,13 +16,13 @@
         "Entry"
         {
         "MsmKey" = "8:_22C97CD9B0C47E728F25E2A109DD0775"
-        "OwnerKey" = "8:_7A4209B643444A369C1D70E4D85C24D4"
+        "OwnerKey" = "8:_A8347D9B390C4405AC1DE4E1F0188614"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_6085A2FE9BA395329F85FD3FA80051D1"
-        "OwnerKey" = "8:_7A4209B643444A369C1D70E4D85C24D4"
+        "OwnerKey" = "8:_A8347D9B390C4405AC1DE4E1F0188614"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -34,25 +34,25 @@
         "Entry"
         {
         "MsmKey" = "8:_6F5B080E3B66046B47327E6D6BE579D8"
-        "OwnerKey" = "8:_7A4209B643444A369C1D70E4D85C24D4"
+        "OwnerKey" = "8:_A8347D9B390C4405AC1DE4E1F0188614"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_7A4209B643444A369C1D70E4D85C24D4"
+        "MsmKey" = "8:_A8347D9B390C4405AC1DE4E1F0188614"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_C228131510B7D90AC5D902D45C68A685"
-        "OwnerKey" = "8:_7A4209B643444A369C1D70E4D85C24D4"
+        "OwnerKey" = "8:_A8347D9B390C4405AC1DE4E1F0188614"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_C8C4C7FE69872E0FE8F0F6262F605722"
-        "OwnerKey" = "8:_7A4209B643444A369C1D70E4D85C24D4"
+        "OwnerKey" = "8:_A8347D9B390C4405AC1DE4E1F0188614"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -76,7 +76,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_7A4209B643444A369C1D70E4D85C24D4"
+        "OwnerKey" = "8:_A8347D9B390C4405AC1DE4E1F0188614"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -121,6 +121,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
         "Release"
         {
@@ -137,6 +145,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -398,7 +422,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BTScanner"
         "ProductCode" = "8:{4AFAFF66-FAC8-4F31-88CC-AA79FC4397FC}"
-        "PackageCode" = "8:{A10A9145-9D98-47E6-9A81-E46090242214}"
+        "PackageCode" = "8:{DA2B1B93-EFDA-4805-9EEE-95CB9C2EAE8D}"
         "UpgradeCode" = "8:{59A809A3-78A0-4BD2-BE3A-81B534F90871}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -518,7 +542,7 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_7ECA7BBFC8F749CEAFD95F99086F1516"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_57D7DB225DA54461AF6F8C518AEC02E2"
             {
             "Name" = "8:BTScanner"
             "Arguments" = "8:"
@@ -526,13 +550,13 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_7A4209B643444A369C1D70E4D85C24D4"
+            "Target" = "8:_A8347D9B390C4405AC1DE4E1F0188614"
             "Folder" = "8:_FB6B6E9425754594AE17FA97B59A9480"
             "WorkingFolder" = "8:_ECDFCC04129D4B9B91143D74B0D026C6"
             "Icon" = "8:_D69B58F584414AFF917E50AC57D40160"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_B3B56F31E5FD4ED7BB223A5346219C35"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_F2E8F8A0EC0944048A07F51EDE6FCB47"
             {
             "Name" = "8:BTScanner"
             "Arguments" = "8:"
@@ -540,7 +564,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_7A4209B643444A369C1D70E4D85C24D4"
+            "Target" = "8:_A8347D9B390C4405AC1DE4E1F0188614"
             "Folder" = "8:_FB0CCE8037724DF5A751D03FCC72463B"
             "WorkingFolder" = "8:_ECDFCC04129D4B9B91143D74B0D026C6"
             "Icon" = "8:_D69B58F584414AFF917E50AC57D40160"
@@ -945,9 +969,9 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_7A4209B643444A369C1D70E4D85C24D4"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A8347D9B390C4405AC1DE4E1F0188614"
             {
-            "SourcePath" = "8:..\\BTScanner\\obj\\Release\\tiota.exe"
+            "SourcePath" = "8:..\\BTScanner\\obj\\Debug\\BTScanner.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_ECDFCC04129D4B9B91143D74B0D026C6"

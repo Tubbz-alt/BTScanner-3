@@ -1122,13 +1122,13 @@ namespace tiota
         public const Byte CmdHdrSize = 0x04;
         public const UInt16 CmdRspReqOCodeMask = 0x00FF;
         public const string ZeroXStr = "0x";
-
+/*
         public struct EventHeader
         {
             Byte packetType;
             Byte eventCode;
             Byte dataLength;
-        }
+        }*/
         public const Byte EvtHdrSize = 0x03;
 
         public struct GATTReadByTypeData

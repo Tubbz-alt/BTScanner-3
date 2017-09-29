@@ -46,7 +46,6 @@ namespace tiota
         private static Logger logger = LogManager.GetCurrentClassLogger();
         bool _in_scan = false;
         bool _in_test = false;
-        bool _first_round = true;
         int timeOutnter = 0;
         #endregion
 
@@ -69,6 +68,9 @@ namespace tiota
             tmrDiscover.Enabled = false;
             logger.Debug("Staring at :" + DateTime.Now.ToString());
             this.Text += " - Ver " + Application.ProductVersion;
+            btnScan.Enabled = false;
+            btnStart.Enabled = false;
+            btnStop.Enabled = false;
         }
 
         private void InitGuiData()
@@ -282,15 +284,18 @@ namespace tiota
                         {
                             row.DefaultCellStyle.BackColor = Color.White;
                         }
-                        string line = string.Format("{4,3},{0,8},{1,15},{2,4},{5,12},{3}" + Environment.NewLine, 
-                                                              row.Cells["colMAC"].Value.ToString(),
-                                                              row.Cells["colDeviceName"].Value.ToString(),
-                                                              row.Cells["colRSSI"].Value.ToString(),
-                                                              DateTime.Now.ToString(),
-                                                              (int)row.Tag,
-                                                              row.Cells["colVersion"].Value.ToString());
+                        if (!string.IsNullOrEmpty(txtCsvFile.Text))
+                        {
+                            string line = string.Format("{4,3},{0,8},{1,15},{2,4},{5,12},{3}" + Environment.NewLine,
+                                                                  row.Cells["colMAC"].Value.ToString(),
+                                                                  row.Cells["colDeviceName"].Value.ToString(),
+                                                                  row.Cells["colRSSI"].Value.ToString(),
+                                                                  DateTime.Now.ToString(),
+                                                                  (int)row.Tag,
+                                                                  (row.Cells["colVersion"].Value == null ? "" : row.Cells["colVersion"].Value.ToString()));
+                            File.AppendAllText(txtCsvFile.Text, line);
+                        }
                         row.Tag = 0;
-                        File.AppendAllText(txtCsvFile.Text, line);
                     }
                 }
             }
@@ -398,7 +403,15 @@ namespace tiota
             }
             else
             {
-                pgrInterval.Value = value;
+               
+                try
+                {
+                    if ((value <= pgrInterval.Maximum) && (value >= pgrInterval.Minimum))
+                    {
+                        pgrInterval.Value = value;
+                    }
+                }
+                catch { }
             }
         }
 
