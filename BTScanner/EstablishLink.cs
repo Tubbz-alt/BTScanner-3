@@ -11,7 +11,7 @@ namespace tiota
     {
         byte status = 0xFF;
         ushort connectionHandle = 0;
-        PhysicalAddress macAddress = null;
+        string macAddress = null;
 
         public EstablishLink(byte[] data)
         {
@@ -19,14 +19,14 @@ namespace tiota
 
             byte[] mac = new byte[6];
             Array.Copy(data, 2, mac, 0, 6);
-            macAddress = new PhysicalAddress(mac);
+            macAddress = BitConverter.ToString(mac).Replace("-", string.Empty);
 
             connectionHandle = (ushort)(data[8] + (data[9]<<8));
         }
 
         public byte Status { get { return status; } }
 
-        public PhysicalAddress MacAddress { get { return macAddress; } }
+        public string MacAddress { get { return macAddress; } }
 
         public ushort ConnectionHandle { get { return connectionHandle; } }
 

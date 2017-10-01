@@ -7,6 +7,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using static tiota.HCICmds;
@@ -24,9 +25,9 @@ namespace tiota
 
     interface IGUI
     {
-        void AddDevice(PhysicalAddress MAC, string name, int rssi);
-        void UpdateDevice(PhysicalAddress MAC, string name, int rssi);
-        void UpdateDeviceRssi(PhysicalAddress MAC, int rssi);
+        void AddDevice(string MAC, string name, int rssi);
+        void UpdateDevice(string MAC, string name, int rssi);
+        void UpdateDeviceRssi(string MAC, int rssi);
     } 
     #endregion
 
@@ -47,6 +48,10 @@ namespace tiota
         bool _in_scan = false;
         bool _in_test = false;
         int timeOutnter = 0;
+        private int next_dps_to_connect = 0;
+        private BleDevice last_connected_device = null;
+        private bool _checkConnection = false;
+        private string CsvFilename;
         #endregion
 
         #region Form init
@@ -102,7 +107,7 @@ namespace tiota
             try
             {
                 if (_dongle == null)
-                    _dongle = new NoCheckResponse(Port, this);
+                    _dongle = new TiDongle(Port, this);
             }
             catch
             {
@@ -126,10 +131,15 @@ namespace tiota
             btnStop.Enabled = true;
             btnClear.Enabled = false;
             chkCheckAll.Enabled = false;
+            chkCheckConnection.Enabled = false;
             //Send cancel discovery
 
-            DataGridViewCheckBoxCell oCell;
+            _checkConnection = chkCheckConnection.Checked;
+            CsvFilename = txtCsvFile.Text;
+
+        DataGridViewCheckBoxCell oCell;
             List<DataGridViewRow> removeRows = new List<DataGridViewRow>();
+            BleDevices.Clear();
             foreach (DataGridViewRow row in grdTargets.Rows)
             {
                 row.Tag = 0;
@@ -138,6 +148,11 @@ namespace tiota
                 if (bChecked != true)
                 {
                     removeRows.Add(row);
+                }
+                else
+                {
+                    BleDevices.Add(new BleDevice(row.Cells["colMAC"].Value.ToString(), 
+                                                row.Cells["colDeviceName"].Value.ToString()));
                 }
             }
 
@@ -155,7 +170,7 @@ namespace tiota
             tmrDiscover.Stop();
             _dongle.TiDisconnectAll();
 
-            _dongle.Terminate();
+            _dongle.TerminateLinkRequest();
             _dongle.HardReset();
 
             Thread.Sleep(500);
@@ -168,6 +183,7 @@ namespace tiota
             btnStop.Enabled = false;
             btnClear.Enabled = true;
             chkCheckAll.Enabled = true;
+            chkCheckConnection.Enabled = true; 
         }
 
         private void cmbPorts_SelectedIndexChanged(object sender, EventArgs e) { }
@@ -176,7 +192,7 @@ namespace tiota
         #endregion
 
         #region GUI Update
-        public void AddDevice(PhysicalAddress MAC, string name, int rssi)
+        public void AddDevice(string MAC, string name, int rssi)
         {
             if (this.InvokeRequired)
             {
@@ -184,16 +200,22 @@ namespace tiota
             }
             else
             {
-                if (_in_test == false)
+                byte[] mac = StringToByteArray(MAC);
+                
+                if ((_in_test == false) || ((mac[5] == 0x04 ) && (mac[4]== 0xa3) && (mac[3] == 0x16) && (mac[2] == 0x04)))
                 {
-                    this.grdTargets.Rows.Add(MAC.ToString(), name, rssi);
+                    int i = this.grdTargets.Rows.Add(MAC, name, rssi);
+                    if ((mac[5] == 0x04) && (mac[4] == 0xa3) && (mac[3] == 0x16) && (mac[2] == 0x04))
+                    {
+                        ((DataGridViewCheckBoxCell)grdTargets.Rows[i].Cells["colTest"]).Value = true;
+                    }
                     UpdateRowCounter();
                 }
 
             }
         }
 
-        public void UpdateDevice(PhysicalAddress MAC, string name, int rssi)
+        public void UpdateDevice(string MAC, string name, int rssi)
         {
             if (this.InvokeRequired)
             {
@@ -219,7 +241,7 @@ namespace tiota
             }
         }
 
-        public void UpdateDeviceRssi(PhysicalAddress MAC, int rssi)
+        public void UpdateDeviceRssi(string MAC, int rssi)
         {
             if (this.InvokeRequired)
             {
@@ -276,7 +298,8 @@ namespace tiota
                     {
                         if (row.Tag == null)
                             row.Tag = 0;
-                        if ((int)row.Tag == 0)
+                        BleDevice device = BleDevices.GetDeviceByMac(row.Cells["colMac"].Value.ToString());
+                        if ((int)row.Tag == 0 || ((device != null) && (!device.Connected)))
                         {
                             row.DefaultCellStyle.BackColor = Color.OrangeRed;
                         }
@@ -286,17 +309,20 @@ namespace tiota
                         }
                         if (!string.IsNullOrEmpty(txtCsvFile.Text))
                         {
-                            string line = string.Format("{4,3},{0,8},{1,15},{2,4},{5,12},{3}" + Environment.NewLine,
+                            string line = string.Format("{4,3},{0,8},{1,15},{2,4},{5,12},{6,6},{3}" + Environment.NewLine,
                                                                   row.Cells["colMAC"].Value.ToString(),
                                                                   row.Cells["colDeviceName"].Value.ToString(),
                                                                   row.Cells["colRSSI"].Value.ToString(),
                                                                   DateTime.Now.ToString(),
                                                                   (int)row.Tag,
-                                                                  (row.Cells["colVersion"].Value == null ? "" : row.Cells["colVersion"].Value.ToString()));
+                                                                  (row.Cells["colVersion"].Value == null ? "" : row.Cells["colVersion"].Value.ToString()),
+                                                                  device != null ? device.Connected.ToString() : "false");
                             File.AppendAllText(txtCsvFile.Text, line);
                         }
                         row.Tag = 0;
                     }
+
+                    TestConnection();
                 }
             }
         }
@@ -357,7 +383,7 @@ namespace tiota
             }
         }
 
-        private void tmrProgressUpdate_Tick(object sender, EventArgs e)
+        private void tmrScanAdvertising(object sender, EventArgs e)
         {
             timeOutnter += 1;
             SetProgress((timeOutnter * 100) / (int)numInterval.Value);
@@ -366,11 +392,51 @@ namespace tiota
                 if (_in_scan == false)
                 {
                     _dongle.Discaver();
+                    
                     _in_scan = true;
                     timeOutnter = 0;
                     SetProgress(0);
                 }
             }
+        }
+
+        private void TestConnection()
+        {
+            if (_checkConnection == false)
+                return;
+
+            if (grdTargets.Rows.Count >= next_dps_to_connect)
+            {
+                next_dps_to_connect = 0;
+            }
+
+            if (last_connected_device != null)
+            {
+                if (last_connected_device.Connected == true)
+                {
+                    _dongle.TerminateLinkRequest(last_connected_device.Handle);
+                    /*while (last_connected_device.Connected)
+                    {
+                        Thread.Sleep(1000);
+
+                        _dongle.TerminateLinkRequest(last_connected_device.Handle);
+                    }*/
+                }
+                else
+                {
+
+                }
+                
+            }
+
+            DataGridViewRow row = grdTargets.Rows[next_dps_to_connect];
+            BleDevice device = BleDevices.GetDeviceByMac(row.Cells["colMAC"].Value.ToString());
+            last_connected_device = device;
+            if (device != null)
+            {
+                _dongle.TiConnect(device.MacBytes());
+            }
+
         }
 
         private void cmbPorts_TextChanged(object sender, EventArgs e)
@@ -418,6 +484,7 @@ namespace tiota
         private void btnClear_Click(object sender, EventArgs e)
         {
             grdTargets.Rows.Clear();
+            BleDevices.Clear();
             UpdateRowCounter();
 
         }

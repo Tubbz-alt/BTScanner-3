@@ -6,33 +6,33 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using static tiota.HCICmds.GAPCmds;
 using static tiota.HCICmds;
-
+using static tiota.HCICmds.GATTCmds;
 
 namespace tiota
 {
     interface IBleCommands
     {
-        void SendData(byte[] buffer, int wait = 200, [CallerMemberName]string memberName = "");
-        void TiConnect(byte[] MacAddress);
+        bool SendData(byte[] buffer, int wait = 200, [CallerMemberName]string memberName = "");
+        string TiConnect(byte[] MacAddress);
         void TiDisconnectAll();
-        void TerminateLinkRequest(ushort Handle);
-        void GetParam(byte id);
+        string TerminateLinkRequest(ushort Handle);
+        string GetParam(GAP_ParamId id);
         void GetParam(byte[] ids);
-        void ReadCharValueByHandle(ushort CommHandle, ushort Handle);
-        void WriteCharValueByHandle(ushort CommHandle, ushort Handle, byte[] value);
+        string ReadCharValueByHandle(ushort CommHandle, ushort Handle);
+        string WriteCharValueByHandle(ushort CommHandle, ushort Handle, byte[] value);
         bool CommandReplyed { get; set; }
         bool WriteResponse { get; }
-        void WriteOADByHandle(ushort CommHandle, ushort Handle, byte[] value);
+        string WriteOADByHandle(ushort CommHandle, ushort Handle, byte[] value);
         ushort NextBlock { get; set; }
         void SetTimers(ushort Handle);
     }
 
     public class TiEventArgs : EventArgs
     {
-        public PhysicalAddress Address = null;
+        public string Address = null;
         public string Message = string.Empty;
 
-        public TiEventArgs(PhysicalAddress a = null, string msg = "")
+        public TiEventArgs(string a = null, string msg = "")
         {
             Address = a;
             Message = msg;
@@ -141,7 +141,7 @@ namespace tiota
 
         }
 
-        public virtual void SendData(byte[] buffer, int wait = 0, [CallerMemberName] string memberName = "")
+        public virtual bool SendData(byte[] buffer, int wait = 1000, [CallerMemberName] string memberName = "")
         {
            
             CommandReplyed = false;
@@ -157,6 +157,7 @@ namespace tiota
                     Thread.Sleep(1);
                 }
             }
+            return CommandReplyed;
             //_logger.LogDebug("Tx : " + BitConverter.ToString(buffer) + Environment.NewLine);
         }
 
@@ -236,11 +237,11 @@ namespace tiota
                     case TI_PROTOCOL_EVENT_OPCODE_INIT_SUCCESS:
                         {
                             HCI_ExtentionCommandStatus h = new HCI_ExtentionCommandStatus(Replay.data);
-                            GetParam(0x15);
+                            GetParam(GAP_ParamId.TGAP_CONN_EST_INT_MIN);
                             Thread.Sleep(200);
-                            GetParam(0x16);
+                            GetParam(GAP_ParamId.TGAP_CONN_EST_INT_MAX);
                             Thread.Sleep(200);
-                            GetParam(0x1A);
+                            GetParam(GAP_ParamId.TGAP_CONN_EST_LATENCY);
                             Thread.Sleep(200);
                             init_success = true;
                             if (OnHardwareInitComplite != null)
@@ -353,8 +354,6 @@ namespace tiota
             set { lock (nextBlockLock) { nextBloxk = value; } }
         }
 
-
-
         public bool WriteResponse
         {
             get
@@ -372,19 +371,26 @@ namespace tiota
 
         }
 
-        public void Discaver()
+        public string Discaver()
         {
-            byte[] TxBuffer = new byte[] { 1, 4, 0xfe, 3, 3, 1, 0 };
-            byte []b = new GAP_DeviceDiscoveryRequest().GetBuffer();
-            SendData(b);
+            //byte[] TxBuffer = new byte[] { 1, 4, 0xfe, 3, 3, 1, 0 };
+            GAP_DeviceDiscoveryRequest cmd = new GAP_DeviceDiscoveryRequest();
+            byte [] TxBuffer = cmd.GetBuffer();
+            SendData(TxBuffer);
+            return cmd.ToString(); ;
         }
 
-        public void TiConnect(byte[] MacAddress)
+        public string TiConnect(byte[] MacAddress)
         {
             device_connected = false;
+            GAP_EstablishLinkRequest cmd = new GAP_EstablishLinkRequest();
+            cmd.peerAddr = MacAddress;
 
-            byte[] TxBuffer = new byte[13];
+            byte[] TxBuffer = cmd.GetBuffer();
+            
+            /*new byte[13];
 
+            
             TxBuffer[0] = 0x01;
             TxBuffer[1] = 0x09;
             TxBuffer[2] = 0xfe;
@@ -393,8 +399,9 @@ namespace tiota
             TxBuffer[5] = 0x00;
             TxBuffer[6] = 0x00;
             MacAddress.CopyTo(TxBuffer, 7);
-
+            */
             SendData(TxBuffer);
+            return cmd.ToString();
         }
 
         public void TiDisconnectAll()
@@ -404,11 +411,13 @@ namespace tiota
                     TerminateLinkRequest(i);
             }
         }
-
        
-        public void TerminateLinkRequest(ushort Handle)
+        public string TerminateLinkRequest(ushort Handle = 0)
         {
-            byte[] TxBuffer = new byte[13];
+            GAP_TerminateLinkRequest cmd = new GAP_TerminateLinkRequest();
+            cmd.connHandle = Handle;
+            byte[] TxBuffer = cmd.GetBuffer();
+                /*new byte[13];
 
             TxBuffer[0] = 0x01;
             TxBuffer[1] = 0x0A;
@@ -417,42 +426,46 @@ namespace tiota
             TxBuffer[4] = (byte)Handle;
             TxBuffer[5] = (byte)(Handle>>8);
             TxBuffer[6] = 0x13; //Remote User Terminated Connection
-
-            SendData(TxBuffer);
+            */
+            SendData(TxBuffer, 3000);
+            return cmd.ToString();
 
         }
         #region USB Module commands
-        public void Init()
+        public string Init()
         {
             init_success = false;
-            byte[] TxBuffer = new byte[] { 1,
+            /*byte[] TxBuffer = new byte[] { 1,
                 0x00, 0xfe,
                 0x26,
                 08,
                 05,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                1, 0, 0, 0 };
-            byte[] b = new GAP_DeviceInit().GetBuffer();
-            SendData(b, 0);
-            //SendData(TxBuffer, 0);
+                1, 0, 0, 0 };*/
+            GAP_DeviceInit cmd = new GAP_DeviceInit(32);
+            byte[] TxBuffer = cmd.GetBuffer();
+            SendData(TxBuffer, 0);
+            return cmd.ToString();
         }
 
-        public void HardReset()
+        public string HardReset()
         {
             init_success = false;
-            SendData(new byte[] { 1, 0x1d, 0xfc, 1, 1 });
+            UTILCmds.UTIL_Reset cmd = new UTILCmds.UTIL_Reset();
+            byte[] TxBuffer = cmd.GetBuffer();
+            SendData(TxBuffer);
+            return cmd.ToString();
         }
 
-        public void Terminate()
+        public string GetParam(GAP_ParamId id)
         {
-            device_disconnected = false;
-            SendData(new byte[] { 1, 0xa, 0xfe, 3, 0, 0, 0x13 });
-        }
-
-        public void GetParam(byte id)
-        {
-            GetParam(new byte[] { id });
+            //GetParam(new byte[] { id });
+            GAP_GetParam cmd = new GAP_GetParam();
+            cmd.paramId = id;
+            byte[] TxBuffer = cmd.GetBuffer();
+            SendData(TxBuffer);
+            return cmd.ToString();
         }
 
         public void GetParam(byte[] ids)
@@ -473,9 +486,13 @@ namespace tiota
             SendData(TxBuffer);
         }
 
-        public void ReadCharValueByHandle(ushort CommHandle, ushort Handle)
+        public string ReadCharValueByHandle(ushort CommHandle, ushort Handle)
         {
-            byte[] TxBuffer = new byte[8];
+            GATT_ReadCharValue cmd = new GATT_ReadCharValue();
+            cmd.connHandle = CommHandle;
+            cmd.handle = Handle;
+            byte[] TxBuffer = cmd.GetBuffer();
+                /*new byte[8];
             TxBuffer[0] = 0x01; //(Command)
             TxBuffer[1] = 0x8A; //0xFD8A (GATT_ReadCharValue)
             TxBuffer[2] = 0xFD; //0xFD8A (GATT_ReadCharValue)
@@ -484,13 +501,20 @@ namespace tiota
             TxBuffer[5] = (byte)(CommHandle >> 8);
             TxBuffer[6] = (byte)Handle;
             TxBuffer[7] = (byte)(Handle >> 8);
-
+            */
             SendData(TxBuffer);
+            return cmd.ToString();
         }
 
-        public void WriteCharValueByHandle(ushort CommHandle, ushort Handle, byte[] value)
+        public string WriteCharValueByHandle(ushort CommHandle, ushort Handle, byte[] value)
         {
-            byte[] TxBuffer = new byte[8 + value.Length];
+            GATT_WriteCharValue cmd = new GATT_WriteCharValue();
+            cmd.connHandle = CommHandle;
+            cmd.handle = Handle;
+            cmd.data = value;
+            byte[] TxBuffer = cmd.GetBuffer(); 
+                
+                /*new byte[8 + value.Length];
             TxBuffer[0] = 0x01; //(Command)
             TxBuffer[1] = 0x92; //0xFD92 (GATT_WriteCharValue)
             TxBuffer[2] = 0xFD; //0xFD92 (GATT_WriteCharValue)
@@ -501,7 +525,7 @@ namespace tiota
             TxBuffer[7] = (byte)(Handle >> 8);
             Array.Copy(value, 0, TxBuffer, 8, Math.Min(TxBuffer.Length - 8, value.Length));
             WriteResponse = false;
-            SendData(TxBuffer);
+            SendData(TxBuffer);*/
 
             DateTime start = DateTime.Now;
             TimeSpan ts = new TimeSpan(20 * TICK_TO_MILISECONDS);
@@ -509,12 +533,18 @@ namespace tiota
             {
                 Thread.Sleep(1);
             }
+            return cmd.ToString();
         }
 
-
-        public void WriteOADByHandle(ushort CommHandle, ushort Handle, byte[] value)
+        public string WriteOADByHandle(ushort CommHandle, ushort Handle, byte[] value)
         {
-            byte[] TxBuffer = new byte[8 + value.Length];
+            GATT_WriteNoRsp cmd = new GATT_WriteNoRsp();
+            cmd.connHandle = CommHandle;
+            cmd.handle = Handle;
+            cmd.data = value;
+            byte[] TxBuffer = cmd.GetBuffer();
+
+            /*byte[] TxBuffer = new byte[8 + value.Length];
             TxBuffer[0] = 0x01; //(Command)
             TxBuffer[1] = 0xB6; //0xFD92 (GATT_WriteCharValue)
             TxBuffer[2] = 0xFD; //0xFD92 (GATT_WriteCharValue)
@@ -524,6 +554,7 @@ namespace tiota
             TxBuffer[6] = (byte)Handle;
             TxBuffer[7] = (byte)(Handle >> 8);
             Array.Copy(value, 0, TxBuffer, 8, Math.Min(TxBuffer.Length - 8, value.Length));
+            */
             WriteResponse = false;
             SendData(TxBuffer);
             /*
@@ -533,6 +564,7 @@ namespace tiota
             {
                 Thread.Sleep(1);
             }*/
+            return cmd.ToString();
         }
 
         #endregion

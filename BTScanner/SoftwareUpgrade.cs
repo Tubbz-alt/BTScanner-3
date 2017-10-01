@@ -267,7 +267,7 @@ namespace tiota
 
         private bool SD_Connect()
         {
-            _ble.TiConnect(dps.MacAddress.GetAddressBytes());
+            _ble.TiConnect(dps.MacBytes());
 
             // wait for connection
             if (!WaitForConnection())

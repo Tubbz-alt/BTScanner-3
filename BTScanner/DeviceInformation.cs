@@ -16,7 +16,7 @@ namespace tiota
         int rssi = 0;
         byte eventType = 0;
         
-        PhysicalAddress macAddress = null;
+        string macAddress = null;
         string name = null;
         public DeviceInformation(byte[] data)
         {
@@ -27,7 +27,7 @@ namespace tiota
 
             byte[] mac = new byte[6];
             Array.Copy(data, 3, mac, 0, 6);
-            macAddress = new PhysicalAddress(mac);
+            macAddress = BitConverter.ToString(mac).Replace("-", string.Empty);
             if (eventType == 4)
             {
                 byte[] description = new byte[12];
@@ -38,7 +38,7 @@ namespace tiota
 
         public byte Status { get { return status; } }
 
-        public PhysicalAddress MacAddress  { get { return macAddress; } }
+        public string MacAddress  { get { return macAddress; } }
 
         public string Name { get { return name; } }
 

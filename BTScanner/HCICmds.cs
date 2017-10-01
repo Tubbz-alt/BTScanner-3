@@ -34,8 +34,10 @@ namespace tiota
 
     public class HCISerializer
     {
+        //public string cmdName = "";
         public Byte dataLength = 0;  // fixed length data only
         public UInt16 opCodeValue = 0;
+        public string cmdName;
 
         public byte[] GetBuffer()
         {
@@ -114,6 +116,28 @@ namespace tiota
             byte[] fix_buff = new byte[i];
             Array.Copy(buff, fix_buff, i);
             return fix_buff;
+        }
+
+        public override string ToString()
+        {
+            string tostring = cmdName + Environment.NewLine;
+            tostring += "\tOpCode :0x" + opCodeValue.ToString("X4") + Environment.NewLine;
+            tostring += "\tDatalen: " + dataLength + Environment.NewLine;
+
+            Type ClassType = this.GetType();
+            foreach (PropertyInfo prop in ClassType.GetProperties())
+            {
+                // for every property loop through all attributes
+                foreach (Attribute att in prop.GetCustomAttributes(false))
+                {
+                    if (att.GetType() == typeof(Serialize))
+                    {
+                        Serialize serialize = (Serialize)att;
+                        tostring += "\t\tParam: " + prop.Name + " = " + prop.GetValue(this,null) + Environment.NewLine;
+                    }
+                }
+            }
+            return tostring;
         }
     }
 
@@ -331,7 +355,10 @@ namespace tiota
       // GATT
       ///////////////////////
       { "0xFD88", "GATT_DiscCharsByUUID" },
+      { "0xFDA8", "GATT_ReadCharValue"},
+      { "0xFD92", "GATT_WriteCharValue"},
       { "0xFD96", "GATT_WriteLong" },
+      { "0xFDB6", "GATT_WriteNoRsp" },
       { "0xFDFC", "GATT_AddService" },
       { "0xFDFD", "GATT_DelService" },
       { "0xFDFE", "GATT_AddAttribute" }, 
@@ -481,7 +508,10 @@ namespace tiota
 
             // GATT
             GATT_DiscCharsByUUID = 0xFD88,
+            GATT_ReadCharValue = 0xFD8A,
+            GATT_WriteCharValue = 0xFD92,
             GATT_WriteLong = 0xFD96,
+            GATT_WriteNoRsp = 0xFDB6,
             GATT_AddService = 0xFDFC,
             GATT_DelService = 0xFDFD,
             GATT_AddAttribute = 0xFDFE,
@@ -1188,9 +1218,9 @@ namespace tiota
                 {
                     dataLength = 0x01;  // fixed length data only
                     opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_SetTxPower;
+                    cmdName = "HCIExt_SetTxPower";
                 }
-                public string cmdName = "HCIExt_SetTxPower";
-                [Description("HCIExt_SetTxPower")]
+                
                 public string opCode
                 {
                     get { return ZeroXStr + opCodeValue.ToString("X4"); }
@@ -1214,8 +1244,9 @@ namespace tiota
                 {
                     dataLength = 0x01;  // fixed length data only
                     opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_OnePktPerEvt;
+                    cmdName = "HCIExt_OnePktPerEvt";
                 }
-                public string cmdName = "HCIExt_OnePktPerEvt";
+
                 [Description("HCIExt_OnePktPerEvt")]
                 public string opCode
                 {
@@ -1240,8 +1271,9 @@ namespace tiota
                 {
                     dataLength = 0x01;  // fixed length data only
                     opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_ClkDivideOnHalt;
+                    cmdName = "HCIExt_ClkDivideOnHalt";
                 }
-                public string cmdName = "HCIExt_ClkDivideOnHalt";
+
                 [Description("HCIExt_ClkDivideOnHalt")]
                 public string opCode
                 {
@@ -1266,8 +1298,9 @@ namespace tiota
                 {
                     dataLength = 0x01;  // fixed length data only
                     opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_DelayPostProc;
+                    cmdName = "HCIExt_DelayPostProc";
                 }
-                public string cmdName = "HCIExt_DelayPostProc";
+
                 [Description("HCIExt_DelayPostProc")]
                 public string opCode
                 {
@@ -1292,8 +1325,9 @@ namespace tiota
                 {
                     dataLength = 0x0;  // fixed length data only
                     opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_Decrypt;
+                    cmdName = "HCIExt_Decrypt";
                 }
-                public string cmdName = "HCIExt_Decrypt";
+
                 [Description("HCIExt_Decrypt")]
                 public string opCode
                 {
@@ -1328,8 +1362,9 @@ namespace tiota
                 {
                     dataLength = 0x08;  // fixed length data only
                     opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_SetLocalSupportedFeatures;
+                    cmdName = "HCIExt_SetLocalSupportedFeatures";
                 }
-                public string cmdName = "HCIExt_SetLocalSupportedFeatures";
+
                 [Description("HCIExt_SetLocalSupportedFeatures")]
                 public string opCode
                 {
@@ -1355,8 +1390,9 @@ namespace tiota
                 {
                     dataLength = 0x01;  // fixed length data only
                     opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_SetFastTxRespTime;
+                    cmdName = "HCIExt_SetFastTxRespTime";
                 }
-                public string cmdName = "HCIExt_SetFastTxRespTime";
+
                 [Description("HCIExt_SetFastTxRespTime")]
                 public string opCode
                 {
@@ -1381,8 +1417,9 @@ namespace tiota
                 {
                     dataLength = 0x02;  // fixed length data only
                     opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_ModemTestTx;
+                    cmdName = "HCIExt_ModemTestTx";
                 }
-                public string cmdName = "HCIExt_ModemTestTx";
+
                 [Description("HCIExt_ModemTestTx")]
                 public string opCode
                 {
@@ -1416,8 +1453,9 @@ namespace tiota
                 {
                     dataLength = 0x0;  // fixed length data only
                     opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIExt_ModemHopTestTx;
+                    cmdName = "HCIExt_ModemHopTestTx";
                 }
-                public string cmdName = "HCIExt_ModemHopTestTx";
+
                 [Description("HCIExt_ModemHopTestTx")]
                 public string opCode
                 {
@@ -2802,6 +2840,151 @@ namespace tiota
             }
             #endregion
 
+            #region GATT_ReadCharValue()
+            /***********************************************************/
+            public class GATT_ReadCharValue : HCISerializer
+            {
+                public GATT_ReadCharValue() : base()
+                {
+                    cmdName = "GATT_WriteCharValue";
+                    dataLength = 0x04;  // fixed length data only
+                    opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GATT_ReadCharValue;
+                }
+            
+                [Description("GATT_ReadCharValue")]
+                public string opCode
+                {
+                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
+                }
+
+                private UInt16 _connHandle = (UInt16)GAP_ConnHandle.Default;
+                private const string _connHandle_default = "0x0000";
+                [Description("Connection Handle (2 Bytes) - The handle of the connection")]
+                [DefaultValueAttribute(typeof(UInt16), _connHandle_default)]
+                [Serialize (number = 1)]
+                public UInt16 connHandle
+                {
+                    get { return _connHandle; }
+                    set { _connHandle = value; }
+                }
+
+                private UInt16 _handle = 0x0000;
+                private const string _handle_default = "0x0000";
+                [Description("Handle (2 Bytes) - The handle of the attribute to be written")]
+                [DefaultValueAttribute(typeof(UInt16), _handle_default)]
+                [Serialize(number = 2)]
+                public UInt16 handle
+                {
+                    get { return _handle; }
+                    set { _handle = value; }
+                }
+            }
+            #endregion
+
+            #region GATT_WriteCharValue()
+            /***********************************************************/
+            public class GATT_WriteCharValue : HCISerializer
+            {
+                public GATT_WriteCharValue() : base()
+                {
+                    cmdName = "GATT_WriteCharValue";
+                    dataLength = 0x04;  // fixed length data only
+                    opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GATT_WriteCharValue;
+                }
+
+                [Description("GATT_WriteCharValue")]
+                public string opCode
+                {
+                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
+                }
+
+                private UInt16 _connHandle = (UInt16)GAP_ConnHandle.Default;
+                private const string _connHandle_default = "0x0000";
+                [Description("Connection Handle (2 Bytes) - The handle of the connection")]
+                [DefaultValueAttribute(typeof(UInt16), _connHandle_default)]
+                [Serialize(number = 1)]
+                public UInt16 connHandle
+                {
+                    get { return _connHandle; }
+                    set { _connHandle = value; }
+                }
+
+                private UInt16 _handle = 0x0000;
+                private const string _handle_default = "0x0000";
+                [Description("Handle (2 Bytes) - The handle of the attribute to be written")]
+                [DefaultValueAttribute(typeof(UInt16), _handle_default)]
+                [Serialize(number = 2)]
+                public UInt16 handle
+                {
+                    get { return _handle; }
+                    set { _handle = value; }
+                }
+
+                private byte [] _data = new byte[0];
+                private const string _data_default = "[]";
+                [Description("Byte array with data to write")]
+                [DefaultValueAttribute(typeof(byte []), _data_default)]
+                [Serialize(number = 3)]
+                public byte [] data
+                {
+                    get { return _data; }
+                    set { _data = value; dataLength = (byte)(4 + _data.Length); }
+                }
+            }
+            #endregion
+
+            #region GATT_WriteNoRsp()
+            /***********************************************************/
+            public class GATT_WriteNoRsp : HCISerializer
+            {
+                public GATT_WriteNoRsp() : base()
+                {
+                    cmdName = "GATT_WriteNoRsp";
+                    dataLength = 0x04;  // fixed length data only
+                    opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GATT_WriteNoRsp;
+                }
+
+                [Description("GATT_WriteNoRsp")]
+                public string opCode
+                {
+                    get { return ZeroXStr + opCodeValue.ToString("X4"); }
+                }
+
+                private UInt16 _connHandle = (UInt16)GAP_ConnHandle.Default;
+                private const string _connHandle_default = "0x0000";
+                [Description("Connection Handle (2 Bytes) - The handle of the connection")]
+                [DefaultValueAttribute(typeof(UInt16), _connHandle_default)]
+                [Serialize(number = 1)]
+                public UInt16 connHandle
+                {
+                    get { return _connHandle; }
+                    set { _connHandle = value; }
+                }
+
+                private UInt16 _handle = 0x0000;
+                private const string _handle_default = "0x0000";
+                [Description("Handle (2 Bytes) - The handle of the attribute to be written")]
+                [DefaultValueAttribute(typeof(UInt16), _handle_default)]
+                [Serialize(number = 2)]
+                public UInt16 handle
+                {
+                    get { return _handle; }
+                    set { _handle = value; }
+                }
+
+                private byte[] _data = new byte[0];
+                private const string _data_default = "[]";
+                [Description("Byte array with data to write")]
+                [DefaultValueAttribute(typeof(byte[]), _data_default)]
+                [Serialize(number = 3)]
+                public byte[] data
+                {
+                    get { return _data; }
+                    set { _data = value; dataLength = (byte)(4 + _data.Length); }
+                }
+            }
+            #endregion
+
             #region GATT_AddService()
             /***********************************************************/
             public class GATT_AddService
@@ -2906,18 +3089,15 @@ namespace tiota
             /***********************************************************/
             public class GAP_DeviceInit : HCISerializer
             {
-                public GAP_DeviceInit() : base()
+                private Byte _maxScanResponses = 0x20;
+                public GAP_DeviceInit(Byte MaxDevices = 0x20) : base()
                 {
                     dataLength = 0x06;  // fixed length data only
                     opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_DeviceInit;
+                    cmdName = "GAP_DeviceInit";
+                    _maxScanResponses = MaxDevices;
                 }
-
-                public string cmdName = "GAP_DeviceInit";
-
-                //public Byte dataLength = 0x06;  // fixed length data only
-                //public UInt16 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_DeviceInit;
-
-
+                
                 [Description("GAP_DeviceInit")]
                 public string opCode
                 {
@@ -2935,7 +3115,7 @@ namespace tiota
                     set { _profileRole = value; }
                 }
 
-                private Byte _maxScanResponses = 0x20;
+                
                 [Description("Max Scan Responses (1 Byte) - The maximun can responses we can receive during a device discovery.")]
                 [DefaultValueAttribute((Byte)0x20)]
                 [Serialize(number = 2)]
@@ -3022,8 +3202,9 @@ namespace tiota
             {
                 dataLength = 0x03;  // fixed length data only
                 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_DeviceDiscoveryRequest;
+                cmdName = "GAP_DeviceDiscoveryRequest";
             }
-            public string cmdName = "GAP_DeviceDiscoveryRequest";
+
             [Description("GAP_DeviceDiscoveryRequest")]
             public string opCode
             {
@@ -3073,8 +3254,8 @@ namespace tiota
             {
                 dataLength = 0x00;  // fixed length data only
                 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_DeviceDiscoveryCancel;
+                cmdName = "GAP_DeviceDiscoveryCancel";
             }
-            public string cmdName = "GAP_DeviceDiscoveryCancel";
 
             [Description("GAP_DeviceDiscoveryCancel - Cancel the current device discovery")]
             public string opCode
@@ -3210,8 +3391,8 @@ namespace tiota
             {
                 dataLength = 0x09;  // fixed length data only
                 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_EstablishLinkRequest;
+                cmdName = "GAP_EstablishLinkRequest";
             }
-            public string cmdName = "GAP_EstablishLinkRequest";
 
             [Description("GAP_EstablishLinkRequest")]
             public string opCode
@@ -3267,10 +3448,11 @@ namespace tiota
         {
             public GAP_TerminateLinkRequest() : base()
             {
-                dataLength = 0x02;  // fixed length data only
+                dataLength = 0x03;  // fixed length data only
                 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_TerminateLinkRequest;
+                cmdName = "GAP_TerminateLinkRequest";
             }
-            public string cmdName = "GAP_TerminateLinkRequest";
+
             [Description("GAP_TerminateLinkRequest")]
             public string opCode
             {
@@ -3286,6 +3468,17 @@ namespace tiota
             {
                 get { return _connHandle; }
                 set { _connHandle = value; }
+            }
+
+            private Byte _data = (Byte)0x13;
+            private const string _data_default = "0x13";
+            [Description("Remote User Terminated Connection")]
+            [DefaultValueAttribute(typeof(Byte), _data_default)]
+            [Serialize(number = 2)]
+            public Byte data
+            {
+                get { return _data; }
+                set { _data = value; }
             }
         }
         #endregion  // GAP_TerminateLinkRequest
@@ -3666,8 +3859,9 @@ namespace tiota
             {
                 dataLength = 0x03;  // fixed length data only
                 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_SetParam;
+                cmdName = "GAP_SetParam";
             }
-            public string cmdName = "GAP_SetParam";
+
             [Description("GAP_SetParam")]
             public string opCode
             {
@@ -3705,8 +3899,9 @@ namespace tiota
             {
                 dataLength = 0x01;  // fixed length data only
                 opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_GetParam;
+                cmdName = "GAP_GetParam";
             }
-            public string cmdName = "GAP_GetParam";
+
             [Description("GAP_GetParam")]
             public string opCode
             {
@@ -3922,8 +4117,9 @@ namespace tiota
                 {
                     dataLength = 0x01;  // fixed length data only
                     opCodeValue = (UInt16)HCICmds.HCICmdOpcode.UTIL_Reset;
+                    cmdName = "UTIL_Reset";
                 }
-                public string cmdName = "UTIL_Reset";
+
                 [Description("UTIL_Reset")]
                 public string opCode
                 {
@@ -4025,9 +4221,9 @@ namespace tiota
                 {
                     dataLength = 0x02;  // fixed length data only
                     opCodeValue = (UInt16)HCICmds.HCICmdOpcode.HCIStatus_ReadRSSI;
+                    cmdName = "HCIStatus_ReadRSSI";
                 }
 
-                public string cmdName = "HCIStatus_ReadRSSI";
                 [Description("HCIStatus_ReadRSSI")]
                 public string opCode
                 {

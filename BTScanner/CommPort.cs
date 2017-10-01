@@ -47,7 +47,7 @@ namespace tiota
             _serialPort.Parity = Parity.None;
             _serialPort.DataBits = 8;
             _serialPort.StopBits = StopBits.One;
-            _serialPort.Handshake = Handshake.RequestToSend;
+            _serialPort.Handshake = Handshake.None;
             _serialPort.ReadTimeout = _readTimeout;
 
             _serialPort.ReceivedBytesThreshold = 1;

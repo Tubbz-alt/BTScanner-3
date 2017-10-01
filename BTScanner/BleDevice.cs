@@ -79,19 +79,34 @@ namespace tiota
 
     public class BleDevice
     {
-        public PhysicalAddress MacAddress { get; }
+        public string MacAddress { get; }
         public string Name { get; set; }
         public ushort Handle { get; set; }
         public bool Connected { get; set; }
         public bool Upgarded { get; set; }
 
-        public BleDevice (PhysicalAddress MacAddress, string Name)
+        public BleDevice (string MacAddress, string Name)
         {
             this.MacAddress = MacAddress;
             this.Name = Name;
             Handle = 0xffff;
             Connected = false;
             Upgarded = false;
+        }
+
+        public byte[] MacBytes()
+        {
+            return (BleDevice.StringToByteArray(MacAddress));
+        }
+
+        
+        public static byte[] StringToByteArray(String hex)
+        {
+            int NumberChars = hex.Length;
+            byte[] bytes = new byte[NumberChars / 2];
+            for (int i = 0; i < NumberChars; i += 2)
+                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+            return bytes;
         }
     }
 }
