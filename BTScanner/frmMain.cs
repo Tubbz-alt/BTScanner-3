@@ -299,13 +299,13 @@ namespace tiota
                         if (row.Tag == null)
                             row.Tag = 0;
                         BleDevice device = BleDevices.GetDeviceByMac(row.Cells["colMac"].Value.ToString());
-                        if ((int)row.Tag == 0 || ((device != null) && (!device.Connected)))
+                        if ((int)row.Tag > 0 || ((device != null) && (device.Connected)))
                         {
-                            row.DefaultCellStyle.BackColor = Color.OrangeRed;
+                            row.DefaultCellStyle.BackColor = Color.White;
                         }
                         else
                         {
-                            row.DefaultCellStyle.BackColor = Color.White;
+                            row.DefaultCellStyle.BackColor = Color.OrangeRed; 
                         }
                         if (!string.IsNullOrEmpty(txtCsvFile.Text))
                         {
@@ -415,12 +415,6 @@ namespace tiota
                 if (last_connected_device.Connected == true)
                 {
                     _dongle.TerminateLinkRequest(last_connected_device.Handle);
-                    /*while (last_connected_device.Connected)
-                    {
-                        Thread.Sleep(1000);
-
-                        _dongle.TerminateLinkRequest(last_connected_device.Handle);
-                    }*/
                 }
                 else
                 {
@@ -434,7 +428,8 @@ namespace tiota
             last_connected_device = device;
             if (device != null)
             {
-                _dongle.TiConnect(device.MacBytes());
+                if (!device.Connected)
+                    _dongle.TiConnect(device.MacBytes());
             }
 
         }

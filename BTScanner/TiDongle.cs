@@ -406,10 +406,7 @@ namespace tiota
 
         public void TiDisconnectAll()
         {
-            for (ushort i = 0; i < 15; i++)
-            {
-                    TerminateLinkRequest(i);
-            }
+            
         }
        
         public string TerminateLinkRequest(ushort Handle = 0)
