@@ -1,0 +1,15 @@
+# Add any directories, files, or patterns you don't want to be tracked by version control
+obj
+.vs
+bin
+/AdvsncedInstaller/AdvsncedInstaller-SetupFiles/AdvsncedInstaller.msi
+/AdvsncedInstaller/AdvsncedInstaller-SetupFiles
+/AdvsncedInstaller/AdvsncedInstaller-cache/part2/output-info.ini
+/AdvsncedInstaller/AdvsncedInstaller-cache/part2/disk1.cab
+/AdvsncedInstaller/AdvsncedInstaller-cache/cacheIndex.txt
+/packages
+/Installer/Release/setup.exe
+/Installer/Release/Installer.msi
+/Installer/Release
+/Installer/Debug/setup.exe
+/Installer/Debug/Installer.msi
