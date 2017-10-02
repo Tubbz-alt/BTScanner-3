@@ -440,7 +440,7 @@ namespace tiota
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 1, 0, 0, 0 };*/
-            GAP_DeviceInit cmd = new GAP_DeviceInit(32);
+            GAP_DeviceInit cmd = new GAP_DeviceInit(50);
             byte[] TxBuffer = cmd.GetBuffer();
             SendData(TxBuffer, 0);
             return cmd.ToString();

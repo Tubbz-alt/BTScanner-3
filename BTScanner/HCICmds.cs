@@ -3090,7 +3090,7 @@ namespace tiota
             public class GAP_DeviceInit : HCISerializer
             {
                 private Byte _maxScanResponses = 0x20;
-                public GAP_DeviceInit(Byte MaxDevices = 0x20) : base()
+                public GAP_DeviceInit(Byte MaxDevices = 50) : base()
                 {
                     dataLength = 0x06;  // fixed length data only
                     opCodeValue = (UInt16)HCICmds.HCICmdOpcode.GAP_DeviceInit;

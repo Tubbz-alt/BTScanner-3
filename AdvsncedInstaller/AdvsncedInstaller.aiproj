@@ -25,7 +25,7 @@
       <Name>BTScanner</Name>
       <Project>{88c7f833-daaf-4397-b208-c5cd2b9e8e19}</Project>
       <Private>True</Private>
-      <OutputsToImport>PrimaryOutput</OutputsToImport>
+      <OutputsToImport>References;PrimaryOutput</OutputsToImport>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Caphyon\Advanced Installer\AdvInstExtTasks.Targets" />
