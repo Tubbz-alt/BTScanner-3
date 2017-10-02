@@ -48,7 +48,7 @@ namespace tiota
         bool _in_scan = false;
         bool _in_test = false;
         int timeOutnter = 0;
-        private int next_dps_to_connect = 0;
+        private int next_dps_to_connect = -1; // after increment by 1 it will set to the first decvice
         private BleDevice last_connected_device = null;
         private bool _checkConnection = false;
         private string CsvFilename;
@@ -405,22 +405,21 @@ namespace tiota
             if (_checkConnection == false)
                 return;
 
-            if (grdTargets.Rows.Count >= next_dps_to_connect)
-            {
-                next_dps_to_connect = 0;
-            }
-
+            #region Disconnect the last connected device
             if (last_connected_device != null)
             {
                 if (last_connected_device.Connected == true)
                 {
                     _dongle.TerminateLinkRequest(last_connected_device.Handle);
                 }
-                else
-                {
+            }
+            #endregion
 
-                }
-                
+            #region Connect to the next device
+            next_dps_to_connect++;
+            if (grdTargets.Rows.Count <= next_dps_to_connect)
+            {
+                next_dps_to_connect = 0;
             }
 
             DataGridViewRow row = grdTargets.Rows[next_dps_to_connect];
@@ -431,7 +430,7 @@ namespace tiota
                 if (!device.Connected)
                     _dongle.TiConnect(device.MacBytes());
             }
-
+            #endregion
         }
 
         private void cmbPorts_TextChanged(object sender, EventArgs e)
@@ -446,7 +445,6 @@ namespace tiota
             ofd.AddExtension = true;
             ofd.CheckPathExists = true;
             ofd.FilterIndex = 1;
-            ofd.FilterIndex = 2;
             ofd.RestoreDirectory = true;
             ofd.OverwritePrompt = false;
 

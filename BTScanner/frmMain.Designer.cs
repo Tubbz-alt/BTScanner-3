@@ -52,7 +52,6 @@
             this.btnClear = new System.Windows.Forms.Button();
             this.chkCheckAll = new System.Windows.Forms.CheckBox();
             this.lblRowCount = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.chkCheckConnection = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.grdTargets)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numInterval)).BeginInit();
@@ -303,16 +302,6 @@
             this.lblRowCount.TabIndex = 15;
             this.lblRowCount.Text = "0";
             // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(0, 0);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(80, 17);
-            this.checkBox1.TabIndex = 16;
-            this.checkBox1.Text = "checkBox1";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
             // chkCheckConnection
             // 
             this.chkCheckConnection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -331,7 +320,6 @@
             this.CausesValidation = false;
             this.ClientSize = new System.Drawing.Size(691, 403);
             this.Controls.Add(this.chkCheckConnection);
-            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.lblRowCount);
             this.Controls.Add(this.chkCheckAll);
             this.Controls.Add(this.btnClear);
@@ -384,7 +372,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colLastSeen;
         private System.Windows.Forms.DataGridViewTextBoxColumn colVersion;
         private System.Windows.Forms.DataGridViewCheckBoxColumn colTest;
-        private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.CheckBox chkCheckConnection;
     }
 }
