@@ -202,7 +202,7 @@ namespace tiota
             {
                 byte[] mac = StringToByteArray(MAC);
                 
-                if ((_in_test == false) || ((mac[5] == 0x04 ) && (mac[4]== 0xa3) && (mac[3] == 0x16) && (mac[2] == 0x04)))
+                if ((_in_test == false) /*|| ((mac[5] == 0x04 ) && (mac[4]== 0xa3) && (mac[3] == 0x16) && (mac[2] == 0x04))*/)
                 {
                     int i = this.grdTargets.Rows.Add(MAC, name, rssi);
                     if ((mac[5] == 0x04) && (mac[4] == 0xa3) && (mac[3] == 0x16) && (mac[2] == 0x04))
