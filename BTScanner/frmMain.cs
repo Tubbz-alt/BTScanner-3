@@ -396,6 +396,11 @@ namespace tiota
                     _in_scan = true;
                     timeOutnter = 0;
                     SetProgress(0);
+                    timeOutnter = 0;
+                }
+                else
+                {
+                    _in_scan = false;
                 }
             }
         }

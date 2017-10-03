@@ -5,8 +5,8 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_BTScanner.exe" Value="..\BTScanner\bin\Debug"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_BTScanner.exe.config" Value="..\BTScanner\bin\Debug"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_BTScanner.exe" Value="..\BTScanner\bin\Release"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_BTScanner.exe.config" Value="..\BTScanner\bin\Release"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_NLog.dll" Value="..\BTScanner\packages\NLog.4.4.7\lib\net45"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_PacketDotNet.dll" Value="..\BTScanner\packages\PacketDotNet.0.13.0\lib\net"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_SharpPcap.dll" Value="..\BTScanner\packages\SharpPcap.4.2.0\lib\net"/>
@@ -26,7 +26,7 @@
     <ROW Property="ProductCode" Value="1033:{36C08803-8A74-4B27-9AB1-876BB96D492D} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="BTScanner"/>
-    <ROW Property="ProductVersion" Value="1.0.5" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.0.6" Type="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{68FEF1E2-AD5E-4DC9-AB3A-6687E908F402}"/>
