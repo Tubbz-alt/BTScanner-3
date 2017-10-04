@@ -215,7 +215,7 @@
             0,
             0});
             this.numInterval.Minimum = new decimal(new int[] {
-            5,
+            20,
             0,
             0,
             0});

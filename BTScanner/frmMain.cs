@@ -1,4 +1,5 @@
 ﻿using NLog;
+using NLog.Targets;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,6 +9,7 @@ using System.IO.Ports;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -45,7 +47,8 @@ namespace BTScanner
 
         #region members
         TiDongle _dongle = null;
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger logger = LogManager.GetLogger("LogFile");
+        private readonly Logger csv = LogManager.GetLogger("CsvFile");
         bool _in_scan = false;
         bool _in_test = false;
         int timeOutnter = 0;
@@ -69,7 +72,7 @@ namespace BTScanner
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            logger.Info("EApplication started");
+            logger.Info("Application started");
             InitGuiData();
             tmrDiscover.Start();
             tmrDiscover.Enabled = false;
@@ -105,7 +108,8 @@ namespace BTScanner
 
         private void btnInit_Click(object sender, EventArgs e)
         {
-
+            pgrInterval.Value = 0;
+            timeOutnter = 0;
             CommPort Port = new CommPort(cmbPorts.Text);
             try
             {
@@ -139,8 +143,10 @@ namespace BTScanner
 
             _checkConnection = chkCheckConnection.Checked;
             CsvFilename = txtCsvFile.Text;
+            FileTarget target = LogManager.Configuration.FindTargetByName("CsvFile") as FileTarget;
+            target.FileName = CsvFilename;
 
-        DataGridViewCheckBoxCell oCell;
+            DataGridViewCheckBoxCell oCell;
             List<DataGridViewRow> removeRows = new List<DataGridViewRow>();
             BleDevices.Clear();
             foreach (DataGridViewRow row in grdTargets.Rows)
@@ -208,6 +214,8 @@ namespace BTScanner
                 
                 if ((_in_test == false) /*|| ((mac[5] == 0x04 ) && (mac[4]== 0xa3) && (mac[3] == 0x16) && (mac[2] == 0x04))*/)
                 {
+                    // Remove unprintable characters
+                    name = Regex.Replace(name, @"[^\u0020-\u007E]", string.Empty); 
                     int i = this.grdTargets.Rows.Add(MAC, name, rssi);
                     if ((mac[5] == 0x04) && (mac[4] == 0xa3) && (mac[3] == 0x16) && (mac[2] == 0x04))
                     {
@@ -231,7 +239,6 @@ namespace BTScanner
                 {
                     if (row.Cells["colMAC"].Value.ToString() == MAC.ToString())
                     {
-                        row.Cells["colDeviceName"].Value = name;
                         row.Cells["colRSSI"].Value = rssi;
                         
                         row.Cells["colLastSeen"].Value = DateTime.Now.ToShortTimeString();
@@ -311,17 +318,18 @@ namespace BTScanner
                         {
                             row.DefaultCellStyle.BackColor = Color.OrangeRed; 
                         }
-                        if (!string.IsNullOrEmpty(txtCsvFile.Text))
+                        if (!string.IsNullOrEmpty(CsvFilename))
                         {
-                            string line = string.Format("{4,3},{0,8},{1,15},{2,4},{5,12},{6,6},{3}" + Environment.NewLine,
+                            string line = string.Format("{4,3},{0,8},{1,15},{2,4},{5,12},{6,6},{3}" /*+ Environment.NewLine*/,
                                                                   row.Cells["colMAC"].Value.ToString(),
                                                                   row.Cells["colDeviceName"].Value.ToString(),
                                                                   row.Cells["colRSSI"].Value.ToString(),
-                                                                  DateTime.Now.ToString(),
+                                                                  DateTime.Now.ToString("MMM-dd HH:mm:ss"),
                                                                   (int)row.Tag,
                                                                   (row.Cells["colVersion"].Value == null ? "" : row.Cells["colVersion"].Value.ToString()),
                                                                   device != null ? device.Connected.ToString() : "false");
-                            File.AppendAllText(txtCsvFile.Text, line);
+                            //File.AppendAllText(txtCsvFile.Text, line);
+                            csv.Info(line);
                         }
                         row.Tag = 0;
                     }
