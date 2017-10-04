@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace tiota
+namespace BTScanner
 {
     class ErrorRsp
     {

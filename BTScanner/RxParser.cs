@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static tiota.HCICmds.ATTCmds;
+using static BTScanner.HCICmds.ATTCmds;
 
-namespace tiota
+namespace BTScanner
 {
     class RxParser
     {

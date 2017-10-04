@@ -1,4 +1,4 @@
-﻿namespace tiota
+﻿namespace BTScanner
 {
     partial class frmMain
     {

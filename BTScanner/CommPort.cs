@@ -7,7 +7,7 @@ using System.IO.Ports;
 using System.Linq;
 using System.Threading;
 
-namespace tiota
+namespace BTScanner
 {
     interface ISerialPort
     {

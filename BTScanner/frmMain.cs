@@ -10,11 +10,12 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using static tiota.HCICmds;
-using static tiota.HCICmds.GAPCmds;
-using static tiota.SoftwareUpgrade;
+using System.Xml.Serialization;
+using static BTScanner.HCICmds;
+using static BTScanner.HCICmds.GAPCmds;
+using static BTScanner.SoftwareUpgrade;
 
-namespace tiota
+namespace BTScanner
 {
     #region Interfaces definitions
     interface ILog
@@ -68,6 +69,7 @@ namespace tiota
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            logger.Info("EApplication started");
             InitGuiData();
             tmrDiscover.Start();
             tmrDiscover.Enabled = false;
@@ -95,8 +97,9 @@ namespace tiota
         {
             btnStart.Enabled = false;
             btnStop.Enabled = false;
-            
+
             //_dongle.TiDisconnectAll();
+            logger.Info("Starting test. Connection test = {0}", chkCheckConnection.Checked.ToString());
             _dongle.Discaver();
         }
 
@@ -167,6 +170,7 @@ namespace tiota
 
         private void btnStop_Click(object sender, EventArgs e)
         {
+            logger.Info("Test stoped");
             tmrDiscover.Stop();
             _dongle.TiDisconnectAll();
 
@@ -475,7 +479,10 @@ namespace tiota
                         pgrInterval.Value = value;
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "Wrong progress value");
+                }
             }
         }
 

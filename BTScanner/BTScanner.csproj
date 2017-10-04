@@ -7,7 +7,7 @@
     <ProjectGuid>{88C7F833-DAAF-4397-B208-C5CD2B9E8E19}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>tiota</RootNamespace>
+    <RootNamespace>BTScanner</RootNamespace>
     <AssemblyName>BTScanner</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -31,21 +31,23 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>OAD.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>BTScanner.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>packages\NLog.4.4.7\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="PacketDotNet, Version=0.13.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\PacketDotNet.0.13.0\lib\net\PacketDotNet.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SharpPcap, Version=4.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\SharpPcap.4.2.0\lib\net\SharpPcap.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.5.0.0-beta11\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -57,16 +59,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AboutBox.Designer.cs">
-      <DependentUpon>AboutBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="BleDevice.cs" />
     <Compile Include="BlockNotification.cs" />
-    <Compile Include="CaptureFile.cs" />
-    <Compile Include="CapturePcapFile.cs" />
     <Compile Include="Decoration.cs" />
     <Compile Include="DeviceDiscoveryDone.cs" />
     <Compile Include="DeviceInformation.cs" />
@@ -92,9 +86,6 @@
     <Compile Include="TiCommand.cs" />
     <Compile Include="TiDongle.cs" />
     <Compile Include="WriteRsp.cs" />
-    <EmbeddedResource Include="AboutBox.resx">
-      <DependentUpon>AboutBox.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="frmMain.en-001.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -109,6 +100,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -123,6 +115,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="OAD.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

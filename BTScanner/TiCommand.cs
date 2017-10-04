@@ -3,7 +3,7 @@ using System;
 using System.Text;
 
 
-namespace tiota
+namespace BTScanner
 {
     /// <summary>
     /// Describe the Ti command header.

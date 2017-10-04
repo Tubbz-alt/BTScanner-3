@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Permissions;
 using System.Threading;
 
-namespace tiota
+namespace BTScanner
 {
     class SoftwareUpgrade
     {

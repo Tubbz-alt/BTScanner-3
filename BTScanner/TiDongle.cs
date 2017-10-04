@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using static tiota.HCICmds.GAPCmds;
-using static tiota.HCICmds;
-using static tiota.HCICmds.GATTCmds;
+using static BTScanner.HCICmds.GAPCmds;
+using static BTScanner.HCICmds;
+using static BTScanner.HCICmds.GATTCmds;
 
-namespace tiota
+namespace BTScanner
 {
     interface IBleCommands
     {

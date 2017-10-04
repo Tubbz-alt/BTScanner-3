@@ -24,7 +24,7 @@ using System.IO;
 using System.Reflection;
 
 
-namespace tiota
+namespace BTScanner
 {
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property)]
     class Serialize : Attribute

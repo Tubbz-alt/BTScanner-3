@@ -5,7 +5,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace tiota
+namespace BTScanner
 {
     /// <summary>
     /// This class manages a dictoinaty of "BleDevice" objects
