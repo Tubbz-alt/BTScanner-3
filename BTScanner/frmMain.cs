@@ -47,8 +47,8 @@ namespace BTScanner
 
         #region members
         TiDongle _dongle = null;
-        private readonly Logger logger = LogManager.GetLogger("LogFile");
-        private readonly Logger csv = LogManager.GetLogger("CsvFile");
+        private static Logger logger = NLog.LogManager.GetLogger("LogFile");
+        private static Logger csv = NLog.LogManager.GetLogger("CsvFile");
         bool _in_scan = false;
         bool _in_test = false;
         int timeOutnter = 0;
@@ -143,9 +143,14 @@ namespace BTScanner
 
             _checkConnection = chkCheckConnection.Checked;
             CsvFilename = txtCsvFile.Text;
-            FileTarget target = LogManager.Configuration.FindTargetByName("CsvFile") as FileTarget;
+            /*
+            FileTarget target1 = LogManager.Configuration.FindTargetByName("LogFileTarget") as FileTarget;
+            NLog.Layouts.Layout logfilename = target1.FileName;*/
+            FileTarget target = LogManager.Configuration.FindTargetByName("CsvFileTarget") as FileTarget;
+            
             target.FileName = CsvFilename;
-
+                       
+            //target1.FileName = logfilename;
             DataGridViewCheckBoxCell oCell;
             List<DataGridViewRow> removeRows = new List<DataGridViewRow>();
             BleDevices.Clear();
@@ -318,9 +323,9 @@ namespace BTScanner
                         {
                             row.DefaultCellStyle.BackColor = Color.OrangeRed; 
                         }
-                        if (!string.IsNullOrEmpty(CsvFilename))
+                        if (csv != null)
                         {
-                            string line = string.Format("{4,3},{0,8},{1,15},{2,4},{5,12},{6,6},{3}" /*+ Environment.NewLine*/,
+                            string line = string.Format("{4,3},{0,8},{1,-15},{2,4},{5,12},{6,-7},{3}" /*+ Environment.NewLine*/,
                                                                   row.Cells["colMAC"].Value.ToString(),
                                                                   row.Cells["colDeviceName"].Value.ToString(),
                                                                   row.Cells["colRSSI"].Value.ToString(),
