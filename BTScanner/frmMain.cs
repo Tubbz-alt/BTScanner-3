@@ -333,7 +333,7 @@ namespace BTScanner
                                                                   (int)row.Tag,
                                                                   (row.Cells["colVersion"].Value == null ? "" : row.Cells["colVersion"].Value.ToString()),
                                                                   device != null ? device.Connected.ToString() : "false");
-                            File.AppendAllText(CsvFilename, line);
+                            File.AppendAllText(CsvFilename, line + Environment.NewLine);
                             //csv.Info(line);
                         }
                         row.Tag = 0;
