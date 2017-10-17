@@ -329,7 +329,7 @@ namespace BTScanner
                                                                   row.Cells["colMAC"].Value.ToString(),
                                                                   row.Cells["colDeviceName"].Value.ToString(),
                                                                   row.Cells["colRSSI"].Value.ToString(),
-                                                                  DateTime.Now.ToString("MMM-dd HH:mm:ss"),
+                                                                  DateTime.Now.ToString(),
                                                                   (int)row.Tag,
                                                                   (row.Cells["colVersion"].Value == null ? "" : row.Cells["colVersion"].Value.ToString()),
                                                                   device != null ? device.Connected.ToString() : "false");
