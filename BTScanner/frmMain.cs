@@ -333,6 +333,14 @@ namespace BTScanner
                                                                   (int)row.Tag,
                                                                   (row.Cells["colVersion"].Value == null ? "" : row.Cells["colVersion"].Value.ToString()),
                                                                   device != null ? device.Connected.ToString() : "false");
+                            try
+                            {
+                                UpdateDeviceRssi(row.Cells["colMAC"].Value.ToString(), 0);
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.Error(ex, "Failed to set RSSI to 0");
+                            }
                             File.AppendAllText(CsvFilename, line + Environment.NewLine);
                             //csv.Info(line);
                         }

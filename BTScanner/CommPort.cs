@@ -94,7 +94,17 @@ namespace BTScanner
 
         public void Read(byte []buffer, int offset=0, int count=1)
         {
-            _serialPort.Read(buffer, offset, count);
+            try
+            {
+                if (!_serialPort.IsOpen)
+                    _serialPort.Open();
+
+                _serialPort.Read(buffer, offset, count);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Failed to read commport");
+            }
         }
 
         public byte ReadByte()
@@ -136,15 +146,37 @@ namespace BTScanner
 
         public void SendBuffer(byte[] TxBuffer)
         {
-            _logger.LogDebug("Tx : " + BitConverter.ToString(TxBuffer));
-            _serialPort.Write(TxBuffer, 0, TxBuffer.Length);
+            try
+            {
+                _logger.LogDebug("Tx : " + BitConverter.ToString(TxBuffer));
+                if (!_serialPort.IsOpen)
+                    _serialPort.Open();
+                _serialPort.Write(TxBuffer, 0, TxBuffer.Length);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Failed to send data");
+            }
+
         }
 
         public void Write(byte[] buffer, int offset = 0, int count = 0)
         {
-            if (count == 0)
-                count = buffer.Length;
-            _serialPort.Write(buffer, offset, count);
+            try
+            {
+                if (count == 0)
+                    count = buffer.Length;
+                if (_serialPort == null)
+                {
+                    logger.Error("_serialPort == null");
+                    Open();
+                }
+                _serialPort.Write(buffer, offset, count);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Failed sending buffer from serial");
+            }
         }
 
         public int BytesToRead { get { return _serialPort.BytesToRead; } }
